@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/api/copywriting", "destination": "/api/copywriting" },
+    { "source": "/api/reply", "destination": "/api/reply" },
+    { "source": "/api/chat", "destination": "/api/chat" },
+    { "source": "/api/poetry", "destination": "/api/poetry" },
+    { "source": "/api/health", "destination": "/api/health" }
+  ]
+}
