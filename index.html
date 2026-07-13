@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>当代余华 · 文案生成 · 诗词歌词 · 破冰回复</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f5f1eb;--card:rgba(255,255,255,.85);--r:16px;--s:0 8px 32px rgba(0,0,0,.08);--t:#2c2c2c;--tl:#888;--p:#6c5ce7;--g:#07c160;--red:#ff2442;--b:#1e9bf0;--gr:linear-gradient(135deg,#6c5ce7,#a29bfe)}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;background:var(--bg);color:var(--t);min-height:100vh;padding-bottom:40px}
+.header{background:var(--gr);padding:28px 20px 24px;text-align:center;color:#fff}
+.header h1{font-size:28px;font-weight:800;letter-spacing:2px}
+.header p{opacity:.8;font-size:14px;margin-top:6px}
+.container{max-width:780px;margin:-16px auto 0;padding:0 16px;position:relative;z-index:1}
+.card{background:var(--card);backdrop-filter:blur(20px);border-radius:var(--r);box-shadow:var(--s);padding:20px;margin-bottom:16px}
+.ct{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ct .icon{font-size:20px}
+.btn{padding:12px 28px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .25s;font-family:inherit}
+.btn:active{transform:scale(.97)}
+.btn-p{background:var(--gr);color:#fff;box-shadow:0 4px 15px rgba(108,92,231,.35)}
+.btn-o{background:transparent;border:2px solid #ddd;color:var(--t)}
+.btn-sm{padding:6px 14px;font-size:13px;border-radius:8px}
+.btn-copy{background:#e8f5e9;color:#2e7d32}
+.btn-fav{background:#fff3e0;color:#e65100}
+.btn-regen{background:#e3f2fd;color:#1565c0}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.platform-tabs,.chip-group,.scene-tabs,.mood-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.platform-tab{flex:1;padding:12px 0;border:2px solid #eee;border-radius:12px;background:#fafafa;cursor:pointer;font-size:15px;font-weight:600;text-align:center;transition:all .25s;user-select:none}
+.platform-tab:hover{transform:translateY(-1px)}
+.platform-tab .emoji{display:block;font-size:22px;margin-bottom:4px}
+.platform-tab.active.pyq{border-color:var(--g);color:var(--g);background:rgba(7,193,96,.08)}
+.platform-tab.active.xhs{border-color:var(--red);color:var(--red);background:rgba(255,36,66,.08)}
+.platform-tab.active.dy{border-color:var(--b);color:var(--b);background:rgba(30,155,240,.08)}
+.chip{padding:7px 16px;border-radius:20px;border:2px solid #eee;background:#fafafa;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;user-select:none}
+.chip.active{border-color:var(--p);background:rgba(108,92,231,.1);color:var(--p)}
+.chip.mood{padding:6px 14px;border-radius:16px}
+.chip.mood.active{background:#e8f5e9;border-color:#66bb6a;color:#2e7d32}
+.form-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.form-row .field{flex:1;min-width:140px}
+.form-row label{display:block;font-size:12px;font-weight:600;color:var(--tl);margin-bottom:4px}
+.form-row input,.form-row select{width:100%;padding:10px 14px;border:2px solid #eee;border-radius:10px;font-size:14px;background:#fff;outline:none;transition:border .2s;font-family:inherit}
+.form-row input:focus,.form-row select:focus{border-color:var(--p)}
+.search-input{width:100%;padding:10px 14px;border:2px solid #e0e0e0;border-radius:10px;font-size:14px;outline:none;margin-bottom:12px;font-family:inherit;transition:border .2s}
+.search-input:focus{border-color:#66bb6a}
+.output-area{min-height:100px;padding:18px;background:linear-gradient(135deg,#fafafa,#f5f1eb);border-radius:12px;border:2px dashed #ddd;margin-bottom:12px}
+.output-area .placeholder{color:#bbb;text-align:center;padding:24px 0;font-size:15px}
+.output-content{font-size:15px;line-height:1.8;white-space:pre-wrap;word-break:break-word}
+.platform-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 10px;border-radius:10px;color:#fff;margin-bottom:10px}
+.badge-pyq{background:var(--g)}.badge-xhs{background:var(--red)}.badge-dy{background:var(--b)}
+.result-card{padding:16px;background:#fafafa;border-radius:12px;border:1px solid #eee;margin-bottom:8px;transition:all .2s}
+.result-card:hover{border-color:#ce93d8;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.result-card .rc-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.result-card .rc-tag{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:700;color:#fff}
+.rc-tag-green{background:var(--g)}.rc-tag-blue{background:var(--b)}
+.result-card .rc-text{font-size:14px;line-height:1.7;margin-bottom:4px}
+.result-card .rc-source{font-size:11px;color:var(--tl);margin-bottom:8px}
+.reply-output{padding:16px;background:linear-gradient(135deg,#fffbeb,#fff0f6);border-radius:12px;border:1.5px dashed #fcc2d7;margin-bottom:10px;min-height:50px;font-size:14px;line-height:1.8;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.chat-box{height:200px;overflow-y:auto;padding:12px;background:#fafafa;border-radius:12px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:80%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.6;animation:msgIn .3s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.ai{background:#fff;border:1px solid #eee;align-self:flex-start;border-bottom-left-radius:4px}
+.msg.user{background:var(--gr);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.chat-row{display:flex;gap:8px}
+.chat-row input{flex:1;padding:10px 14px;border:2px solid #eee;border-radius:12px;font-size:14px;outline:none;font-family:inherit}
+.usage-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;flex-wrap:wrap;margin-top:8px}
+.usage-bar.free{background:#e8f5e9;color:#2e7d32}
+.usage-bar.limit{background:#ffebee;color:#c62828}
+.usage-dots{display:flex;gap:4px}
+.usage-dot{width:16px;height:16px;border-radius:50%;background:#ddd;transition:all .3s}
+.usage-dot.used{background:#ff6b81}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:#333;color:#fff;padding:12px 28px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transition:all .4s;z-index:2000;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* 升级弹窗 */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3000;display:none;justify-content:center;align-items:center;backdrop-filter:blur(3px)}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:20px;padding:28px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:modalIn .35s ease;position:relative}
+@keyframes modalIn{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal h2{font-size:22px;margin-bottom:6px;color:var(--p)}
+.modal .sub{font-size:13px;color:var(--tl);margin-bottom:20px}
+.plan-card{padding:16px;border:2px solid #eee;border-radius:14px;margin-bottom:10px;cursor:pointer;transition:all .2s;display:flex;justify-content:space-between;align-items:center}
+.plan-card:hover{border-color:var(--p)}
+.plan-card.sel{border-color:var(--p);background:rgba(108,92,231,.06)}
+.plan-card .pn{font-weight:700;font-size:15px}
+.plan-card .pp{font-size:24px;font-weight:800;color:var(--p)}
+.plan-card .pp span{font-size:13px;color:var(--tl)}
+.plan-tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:8px;background:#ffecb3;color:#e65100;font-weight:700;margin-left:6px}
+.modal .close-modal{position:absolute;top:14px;right:18px;background:none;border:none;font-size:22px;cursor:pointer;color:#ccc}
+.hidden{display:none!important}
+@media(max-width:600px){.header h1{font-size:22px}.container{padding:0 12px}.card{padding:16px}.platform-tab{font-size:13px;padding:10px 0}.platform-tab .emoji{font-size:18px}.form-row .field{min-width:100%}.msg{max-width:90%}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <h1>✒️ 当代余华</h1>
+  <p>朋友圈 · 小红书 · 抖音 · 诗词歌词 · 破冰回复</p>
+  <button id="apiSettingsBtn" style="position:absolute;top:12px;right:16px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;padding:4px 12px;border-radius:12px;font-size:12px;cursor:pointer;font-family:inherit;">⚙️ API设置</button>
+</header>
+
+<!-- API 设置面板 -->
+<div id="apiPanel" class="card hidden" style="max-width:780px;margin:0 auto 16px;">
+  <div class="ct"><span class="icon">⚙️</span>API 设置 <span style="font-size:12px;font-weight:400;color:var(--tl);margin-left:auto">接入 AI 模型获得更智能的回复</span></div>
+  <div class="form-row">
+    <div class="field"><label>🔑 API Key</label><input type="password" id="apiKeyInput" placeholder="sk-xxxxxxxx"></div>
+    <div class="field" style="min-width:100px;flex:.3"><label>🤖 模型</label><select id="apiModelSelect"><option value="deepseek-chat">DeepSeek V3</option><option value="deepseek-reasoner">DeepSeek R1</option><option value="gpt-4o-mini">GPT-4o-mini</option><option value="custom">自定义</option></select></div>
+  </div>
+  <div class="form-row hidden" id="customUrlRow">
+    <div class="field"><label>🌐 API地址</label><input type="text" id="apiUrlInput" placeholder="https://api.deepseek.com/v1/chat/completions"></div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <button class="btn btn-p btn-sm" id="saveApiBtn">💾 保存</button>
+    <button class="btn btn-o btn-sm" id="clearApiBtn">🗑 清除</button>
+    <span style="font-size:11px;color:var(--tl);margin-left:auto">
+      <span id="apiStatus">未配置</span> ·
+      <a href="https://platform.deepseek.com" target="_blank" style="color:var(--p)">获取 DeepSeek Key（免费额度）</a>
+    </span>
+  </div>
+  <div style="margin-top:8px;font-size:11px;color:var(--tl)">
+    💡 API 模式：破冰回复 & 文案生成使用 AI 实时生成 · 未配置时使用本地引擎 · Key 仅存本地浏览器
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== 文案生成 ===== -->
+  <div class="card">
+    <div class="ct"><span class="icon">✍️</span>生成文案</div>
+    <div class="platform-tabs" id="platformTabs">
+      <div class="platform-tab active pyq" data-p="pyq"><span class="emoji">💚</span>朋友圈</div>
+      <div class="platform-tab xhs" data-p="xhs"><span class="emoji">❤️</span>小红书</div>
+      <div class="platform-tab dy" data-p="dy"><span class="emoji">🎵</span>抖音</div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>📌 主题/关键词</label><input type="text" id="kwInput" placeholder="比如：海边旅行、好物分享…" maxlength="30"></div>
+      <div class="field" style="min-width:100px;flex:.4"><label>📏 长度</label><select id="lenSelect"><option value="ultra">超短(5-10字)</option><option value="short">短</option><option value="medium" selected>中</option><option value="long">长</option></select></div>
+    </div>
+    <label style="font-size:12px;font-weight:600;color:var(--tl);display:block;margin-bottom:6px">🎭 风格</label>
+    <div class="chip-group" id="styleGroup">
+      <span class="chip active" data-s="幽默">😄 幽默</span><span class="chip" data-s="文艺">🌸 文艺</span><span class="chip" data-s="沙雕">🤪 沙雕</span><span class="chip" data-s="励志">🔥 励志</span><span class="chip" data-s="种草">🌿 种草</span><span class="chip" data-s="情感">💕 情感</span>
+    </div>
+    <div class="btn-row" style="margin-top:6px">
+      <button class="btn btn-p" id="genBtn">✨ 生成文案</button>
+      <button class="btn btn-o" id="regenBtn">🎲 换一个</button>
+    </div>
+  </div>
+
+  <!-- ===== 文案展示 ===== -->
+  <div class="card" id="outputCard">
+    <div class="ct"><span class="icon">📝</span>生成结果</div>
+    <div class="output-area" id="outputArea">
+      <div class="placeholder" id="placeholder"><span style="font-size:48px;display:block;margin-bottom:12px">✨</span>输入关键词，点击生成</div>
+      <div class="output-content hidden" id="outputContent"></div>
+    </div>
+    <div class="btn-row hidden" id="outputActions">
+      <button class="btn btn-sm btn-copy" id="copyBtn">📋 复制</button>
+      <button class="btn btn-sm btn-regen" id="regenBtn2">🎲 换一个</button>
+      <button class="btn btn-sm btn-fav" id="favBtn">❤️ 收藏</button>
+    </div>
+  </div>
+
+  <!-- ===== 📖 诗词歌词搜索 ===== -->
+  <div class="card">
+    <div class="ct"><span class="icon">📖</span>诗词歌词 <span style="font-size:12px;font-weight:400;color:var(--tl);margin-left:auto">输入关键词 → 诗词 + 歌词</span></div>
+    <input type="text" class="search-input" id="poetrySearch" placeholder="🔍 试试：思念、爱情、离别、励志、自由、遗憾…" maxlength="20">
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <button class="btn btn-sm btn-p" id="aiSearchBtn" style="font-size:11px;padding:5px 12px;display:none;">🤖 DeepSeek 搜索</button>
+      <span id="aiSearchStatus" style="font-size:11px;color:var(--tl);align-self:center;"></span>
+    </div>
+    <div class="mood-tabs" id="poetryMoodTabs">
+      <span class="chip mood active" data-m="all">🎶 全部</span><span class="chip mood" data-m="古诗词">🏮 古诗词</span><span class="chip mood" data-m="现代诗">✒️ 现代诗</span><span class="chip mood" data-m="名言">💡 名言</span><span class="chip mood" data-m="歌词">🎵 歌词</span>
+    </div>
+    <div id="poetryResults"><div style="color:#bbb;text-align:center;padding:20px">输入关键词搜索诗词和歌词 ✨</div></div>
+  </div>
+
+  <!-- ===== 💬 破冰助手 ===== -->
+  <div class="card">
+    <div class="ct"><span class="icon">💬</span>聊天破冰助手 <span style="font-size:12px;font-weight:400;color:var(--tl);margin-left:auto">高情商 · 破冰 · 幽默</span></div>
+    <label style="font-size:12px;font-weight:600;color:var(--tl);display:block;margin-bottom:6px">🎯 场景</label>
+    <div class="scene-tabs" id="sceneTabs">
+      <span class="chip active" data-sc="搭讪">💕 搭讪</span><span class="chip" data-sc="尬聊">😅 尬聊</span><span class="chip" data-sc="被夸">🥰 被夸</span><span class="chip" data-sc="约会">📅 约会</span><span class="chip" data-sc="拒绝">🙅 拒绝</span><span class="chip" data-sc="道歉">🙏 道歉</span><span class="chip" data-sc="职场">💼 职场</span><span class="chip" data-sc="安慰">🤗 安慰</span><span class="chip" data-sc="感谢">💝 感谢</span><span class="chip" data-sc="表白">💌 表白</span><span class="chip" data-sc="日常">👋 日常</span>
+    </div>
+    <label style="font-size:12px;font-weight:600;color:var(--tl);display:block;margin-bottom:6px">💬 对方说了什么</label>
+    <input type="text" id="iceInput" class="search-input" placeholder="比如：你今天真好看 / 周末吃个饭？" maxlength="60">
+    <label style="font-size:12px;font-weight:600;color:var(--tl);display:block;margin-bottom:6px">🎭 回复风格</label>
+    <div class="chip-group" id="replyStyleGroup">
+      <span class="chip active" data-rs="破冰">🧊 破冰</span><span class="chip" data-rs="幽默">😎 幽默</span><span class="chip" data-rs="高情商">🎯 高情商</span>
+    </div>
+    <div class="btn-row" style="margin-bottom:12px">
+      <button class="btn btn-p" id="genReplyBtn">✨ 生成回复</button>
+    </div>
+    <div id="replyOutput" class="reply-output"><div style="color:#bbb;text-align:center;padding:10px">输入场景和上下文，生成回复 ✨</div></div>
+    <div class="btn-row hidden" id="replyActions">
+      <button class="btn btn-sm btn-copy" id="copyReplyBtn">📋 复制</button>
+      <button class="btn btn-sm btn-fav" id="favReplyBtn">❤️ 收藏</button>
+    </div>
+    <div id="usageBar" class="usage-bar free">
+      <span>💬 免费试用：</span>
+      <span class="usage-dots" id="usageDots"><span class="usage-dot"></span><span class="usage-dot"></span><span class="usage-dot"></span></span>
+      <span id="usageText">剩余 3 次</span>
+      <button class="btn btn-sm btn-p" id="upgradeBtn" style="margin-left:auto;font-size:11px;padding:4px 12px;">🚀 升级高级版</button>
+      <button class="btn btn-sm btn-o" id="resetBtn" style="font-size:11px;padding:4px 8px;display:none;" title="退出高级版，恢复免费试用">↩ 退出</button>
+    </div>
+  </div>
+
+  <!-- ===== AI 聊天 ===== -->
+  <div class="card">
+    <div class="ct"><span class="icon">💬</span>AI 聊天助手</div>
+    <div class="chat-box" id="chatBox"><div class="msg ai">👋 你好！告诉我你想写什么，我帮你生成文案～</div></div>
+    <div class="chat-row">
+      <input type="text" id="chatInput" placeholder="比如：帮我想一条海边旅行的朋友圈…" maxlength="100">
+      <button class="btn btn-p" id="chatSendBtn">发送</button>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:4px">
+    <button class="btn btn-o" id="openFavBtn" style="width:100%">❤️ 我的收藏 (<span id="favCount">0</span>)</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- 升级弹窗 -->
+<div class="modal-overlay" id="upgradeModal">
+  <div class="modal">
+    <button class="close-modal" id="closeModalBtn">✕</button>
+    <h2>🚀 升级高级版</h2>
+    <p class="sub">解锁无限破冰回复 · 专属高情商话术</p>
+    <div class="plan-card sel" data-plan="monthly" id="planMonthly">
+      <div><div class="pn">💫 月卡</div><div style="font-size:12px;color:var(--tl)">30天畅享</div></div>
+      <div class="pp">¥9.9<span>/月</span></div>
+    </div>
+    <div class="plan-card" data-plan="yearly" id="planYearly">
+      <div><div class="pn">👑 年卡 <span class="plan-tag">省60%</span></div><div style="font-size:12px;color:var(--tl)">365天 + 专属特权</div></div>
+      <div class="pp">¥99<span>/年</span></div>
+    </div>
+    <div style="text-align:center;font-size:12px;color:var(--tl);margin:10px 0">已订阅？高级版包含：无限破冰回复 · 专属高情商话术 · 优先更新</div>
+    <button class="btn btn-p" id="payBtn" style="width:100%">💳 立即开通</button>
+    <div style="text-align:center;margin-top:8px;font-size:11px;color:#ccc">⚠️ 当前为演示模式 · 暂不收取真实费用</div>
+  </div>
+</div>
+
+<script>
+// ============================
+// 工具函数
+// ============================
+const Q = id => document.getElementById(id);
+const R = arr => arr[Math.floor(Math.random()*arr.length)];
+let toastTimer;
+function toast(msg) {
+  const t = Q('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ============================
+// 全局状态
+// ============================
+let curPlatform = 'pyq', curStyle = '幽默', curLength = 'medium', curOutput = '', curKw = '';
+let chatUsage = parseInt(localStorage.getItem('wcUsage')||'0');
+const CHAT_LIMIT = 3;
+let isPremium = localStorage.getItem('wcPremium')==='true';
+let favorites = JSON.parse(localStorage.getItem('wcFav')||'[]');
+
+// ============================
+// 数据：热词
+// ============================
+const WORDS = {
+  general: ['出片','含金量','顶级质感','长在审美点上','沉浸式体验','极致的简单','不言而喻的品质感','独立思考','底层逻辑','长期主义','认知升级','质感拉满','恰到好处'],
+  adj: ['惊艳','克制','温润','通透','干净','有力','柔软','清醒','笃定','自洽','舒展','从容','精准','细腻','纯粹','独特','极致'],
+  vibe: ['静奢','松弛感','氛围感','电影感','故事感','高级感','呼吸感','力量感','秩序感','少年感','清冷感'],
+  emoji: ['✨','🌿','🍃','☁️','🌙','🎬','📷','🕊️','⚡️','🌊','🍂','🔥','💡']
+};
+
+// ============================
+// 短文案模板 (20-40字)
+// ============================
+const TEMPLATES_SHORT = {
+  pyq: {
+    '幽默':['{kw}完毕。评分：{feeling}/100，{result}认证。','{kw}战报：{feeling}中拿下{result}。'],
+    '文艺':['{kw}。{feeling}，{result}。','{kw}片刻。{feeling}，刚好。'],
+    '沙雕':['{kw}：{feeling}→{result}。不愧是我。','{kw}迷惑行为+1。{result}，但快乐。'],
+    '励志':['{kw}打卡。{feeling}是过程，{result}是方向。','继续{kw}。{feeling}，值得。'],
+    '种草':['{kw}｜{result}。越用越满意。','{kw}测评：{feeling}，{result}。'],
+    '情感':['{kw}。{feeling}，慢慢来。','{kw}之后。{feeling}大于言语。']
+  },
+  xhs: {
+    '幽默':['标题：{kw}翻车了\n\n{feeling}到怀疑人生，结局{result}。\n\n#翻车 #{kw}'],
+    '文艺':['标题：{kw}｜片刻\n\n{feeling}。\n{result}，是给自己的礼物。\n\n#质感 #{kw}'],
+    '沙雕':['标题：{kw}实录\n\n{feeling}，{result}。绝了。\n\n#真实 #{kw}'],
+    '励志':['标题：{kw}打卡\n\n{feeling}是真的，{result}也是真的。\n\n#坚持 #{kw}'],
+    '种草':['标题：{kw}好物\n\n{feeling}，{result}。\n\n#好物 #{kw}'],
+    '情感':['标题：{kw}\n\n{feeling}。\n{result}，不急。\n\n#心情 #{kw}']
+  },
+  dy: {
+    '幽默':['{kw}第二天：{feeling}，{result}。#日常','{kw}挑战：{feeling}→{result}。#真实'],
+    '文艺':['{kw}｜{feeling}瞬间。{result}。#治愈'],
+    '沙雕':['{kw}前后：{feeling}，{result}。#离谱'],
+    '励志':['{kw}的你：{feeling}之后，{result}。#坚持'],
+    '种草':['{kw}测评！{feeling}，{result}。#好物'],
+    '情感':['{kw}时想：{feeling}→{result}。#深夜']
+  }
+};
+
+// ============================
+// 长文案模板 (80-150字)
+// ============================
+const TEMPLATES_LONG = {
+  pyq: {
+    '幽默':['关于{kw}这件事，我认真复盘了一下。起因很简单，过程很{feeling}，结局很{result}。中间省略了无数次"算了不干了"和"再试最后一次"。但回过头来看——那些差点放弃的瞬间，恰恰是最值得的。今天的感悟：{feeling}不是失败，是过程；{result}不是幸运，是必然。'],
+    '文艺':['今天{kw}了。不是刻意的安排，只是刚好在最好的光线下做了这件事。{feeling}，像在读一本旧书，纸张微微发黄，但每一页都熟悉而温暖。也许生活的意义就在这些细小而坚定的选择里——选择{kw}，选择{feeling}，选择{result}。今天很好，希望你也是。'],
+    '沙雕':['事情是这样的：我决定{kw}。开始之前信心满满，觉得自己天赋异禀。进行到一半的时候{feeling}到开始怀疑人生，甚至想回到过去给那个做决定的自己发一条"别冲动"。但谁能想到，最后居然{result}了！这大概就是{kw}的魅力——你永远不知道下一秒会发生什么，但反正不会比刚才更离谱。'],
+    '励志':['坚持{kw}的第N天。说真的，中间有无数次想放弃。早上六点的闹钟、加班后的疲惫、朋友发来的聚会邀请——每一个都是诱惑。但每次{feeling}到想放弃的时候，就会想起当初为什么开始。不是为了证明什么，只是想知道自己到底能走多远。今天回头看，{result}正在一点一点变成现实。你只管努力，时间会给你答案。'],
+    '种草':['严肃认真地写一篇{kw}的长期使用报告。先说结论：{result}。用了这么久，最打动我的不是参数，是体验。{feeling}的设计语言贯穿整个使用过程，从打开到收起来，每一步都让人觉得它懂自己。如果和我一样追求{result}和{feeling}的质感，几乎没有替代品。钱花在刀刃上，大概就是这个意思。'],
+    '情感':['刚才一个人待了很久，然后在备忘录里写了一段话。关于{kw}，关于那些说不出口的{feeling}，关于一直没来得及消化的情绪。突然发现，允许自己{feeling}是一种能力。不是软弱，是勇敢——承认累了、难过了、需要停下来。{result}不是终点，是和自己的和解。今天就到这里吧。明天太阳照常升起，要好好的。']
+  },
+  xhs: {
+    '幽默':['标题：{kw}复盘｜过程离谱但结局意外\n\n某个普通的下午，我突然决定{kw}。出发前做了详细计划，信心满满。但现实总是比想象精彩——过程中{feeling}到怀疑自己当初是不是脑子进水了。最离谱的是，当我已经放弃"体面"的时候，{result}居然来了。现在回头看，整个过程就是一部喜剧。总结：{kw}需要的不是能力，是厚脸皮和一颗"大不了从头再来"的心。\n\n#真实分享 #{kw} #翻车但值得'],
+    '文艺':['标题：{kw}｜我找到了让自己安静下来的方式\n\n最近一直在想：什么才是真正的放松？不是躺平，不是刷手机——是在{kw}的时候，那种{feeling}的安静。没有deadline，只是单纯地感受时间流过。{result}——这个词突然跳进脑子。是的，这就是我想要的状态。推荐给每一个觉得自己"太忙了"的人。给自己一个{kw}的机会。你需要的不是效率，是{feeling}的片刻。\n\n#质感生活 #{kw} #治愈 #慢下来'],
+    '沙雕':['标题：{kw}全程实录｜建议反复观看\n\n今天要分享一个"本来想优雅结果{feeling}"的故事。上周我决定{kw}。理想很丰满：优雅、从容。现实很骨感：{feeling}，全程高能，一度想当场消失。但！虽然过程离谱，结果居然{result}了！所以结论是：{kw}这件事，需要的不是技巧，是运气。以及一颗不怕丢人的心。欢迎分享翻车经历，评论区见！\n\n#翻车现场 #{kw} #真实 #搞笑'],
+    '励志':['标题：{kw}｜那些看不见的努力，终于被看见了\n\n坚持{kw}的第N天。没有想象中"突然变好"的剧情。更多的是一天又一天{feeling}但依然选择继续的日常。朋友问怎么做到的。我想了想，大概是——不再把{result}当目标，而是当成每天的自然结果。如果你也在坚持什么——别放弃。{result}不会一夜之间发生，但每一个{feeling}之后的继续，都在向它靠近。\n\n#自我成长 #{kw} #坚持 #长期主义'],
+    '种草':['标题：{kw}深度测评｜用了很久才敢说的真话\n\n先说结论：{result}，值得。入之前看遍了所有测评。最后决定自己试试——每个人的需求不一样，别人的"好用"不一定是你的"好用"。使用感受：{feeling}是第一印象，越用越觉得设计者懂生活。从{kw}的每一个细节感受到用心——不是炫技，是{result}的质感。缺点也有：价格不低、需要耐心。但如果追求{result}和{feeling}的长期价值，几乎是最优解。我的消费哲学：买少一点，买好一点。\n\n#好物推荐 #{kw} #理性消费 #品质生活'],
+    '情感':['标题：{kw}｜一些不太好意思发在朋友圈的话\n\n最近总是在想{kw}这件事。夜深人静的时候突然涌上来的情绪。{feeling}。这两个字太轻了，轻到不足以描述心里那些翻涌的东西。但又太重了，重到不想对任何人提起。后来想明白了。{result}不是一天两天的事，是{feeling}了很多次之后，慢慢学会的。学会接受、放下、和不太完美的自己和解。如果你也正在经历类似的时刻——没关系的。{feeling}是过程，{result}是方向。我们都在路上。\n\n#深夜树洞 #{kw} #情绪自由 #治愈']
+  },
+  dy: {
+    '幽默':['今天必须跟你们聊聊{kw}这件事。说实话，开始之前以为自己是天才，开始之后才发现是{feeling}型选手。但最妙的是——结局居然{result}了！所以我的建议：不要预设结果。先做，做了再说。#翻车但快乐 #{kw} #真实'],
+    '文艺':['{kw}的时候，时间好像变慢了。{feeling}，空气里有一种{result}的味道。不是刻意的仪式感，是自然而然想要好好度过这一刻。我们都太忙了，忙到忘了{feeling}本身就是一种力量。今天试试{kw}吧，哪怕只有十分钟。#治愈 #{kw} #慢生活'],
+    '沙雕':['给大家分享一下我{kw}的精彩瞬间：开头自信满满→中间{feeling}到想退网→结尾{result}。整个过程像坐过山车，刺激是真的，丢人也是真的。但我不后悔——{result}的感觉太上头了！#沙雕日常 #{kw}'],
+    '励志':['如果你也在{kw}的路上，这条视频是给你的。我知道{feeling}的时候很难熬，特别是看不到{result}的时候。但我想告诉你——你以为的"没什么变化"，在别人眼里已经是很大的进步了。别急，{result}需要时间。而你，值得等。#正能量 #{kw} #成长 #坚持'],
+    '种草':['给你们安利一个东西——{kw}。不是广告，是用了之后真的觉得{result}才来分享的。{feeling}的体验从一开始就在线，细节控会爱上的那种。如果你也在犹豫要不要入——放心入，它配得上你的期待。#好物推荐 #{kw} #真实测评'],
+    '情感':['关于{kw}，有些话想说。{feeling}不是软弱，{result}是必经的过程。每一个深夜里的自我怀疑，每一个{feeling}到想哭的瞬间，都是{result}的铺垫。别太苛责自己——你已经在变好的路上了。#深夜 #情感 #{kw} #治愈']
+  }
+};
+
+// ============================
+// 文案模板（中长度，40-80字）
+// ============================
+const TEMPLATES = {
+  pyq: {
+    '幽默':[
+      '今日份{kw}播报：预报说会有{feeling}，实际上{result}。天气不靠谱，但快乐是真的。🌤️',
+      '郑重声明：{kw}这件事，过程和结果严重不符。过程像{feeling}，结局像{result}。但我选择只看结局。',
+      '朋友问我{kw}有什么秘诀。我想了想说：秘诀就是——每次{feeling}的时候假装自己很享受。演着演着就信了，然后{result}就来了。'
+    ],
+    '文艺':[
+      '今天{kw}了。光线刚好，杯子里的茶冒着热气，窗外有鸟叫。{feeling}，像翻到一本书里被折过角的那一页。{result}。这样的下午值得被记住。',
+      '{kw}的时候突然发现——原来让人快乐的不是结果，是那个{feeling}的过程本身。像是剥开一颗糖，糖纸沙沙响的那几秒比甜味更让人期待。{result}，慢慢来。',
+      '记录一个普通但{feeling}的瞬间：{kw}，手指尖有点凉，空气里有桂花和秋天混合的味道。{result}。不是什么了不起的事，但刚好够治愈今天。'
+    ],
+    '沙雕':[
+      '家人们！{kw}成绩单出来了——总分{feeling}，排名{result}。已经超越了我家猫的智商水平，四舍五入就是天才。不接受反驳。',
+      '关于{kw}这件事，我愿称之为：年度迷惑行为。环节一：信心爆棚。环节二：{feeling}。环节三：破罐破摔。结局：{result}。总结：人类，永远年轻永远离谱。',
+      '请大家欣赏我的{kw}成果：99%的{feeling}+1%的{result}。虽然那1%全靠运气，但不妨碍我骄傲。毕竟运气也是实力的一部分（理直气壮）。'
+    ],
+    '励志':[
+      '{kw}的第N天。没有逆袭剧本，只有每天早上闹钟响了之后那三秒钟的挣扎。但每次{feeling}之后——还是选择了继续。不是因为看到{result}，是因为不想辜负那个决定开始的自己。',
+      '有人问：{kw}有什么意义？我想说——意义不是等来的，是{feeling}到想放弃的时候，仍然选择再多撑一分钟。然后某天一抬头，{result}就在眼前了。',
+      '复盘了一下{kw}这段时间：崩溃过、{feeling}过、想删掉所有计划重新来过——但我没有。所以今天我站在这，{result}就是最好的证明。你想要的，都值得再坚持一下。'
+    ],
+    '种草':[
+      '用了三周才敢来写{kw}的真实反馈。一句话：{result}。不是一见钟情那种，是{feeling}的细水长流——每次用都觉得物有所值。建议先收藏，想清楚再入。理性消费，体面生活。',
+      '真诚安利：{kw}。如果只能用一个词形容——{result}。从{feeling}的细节到整体质感，它属于那种"不买不会怎么样，买了生活质量上一个台阶"的类型。',
+      '不是广告，是{feeling}之后的真情实感。{kw}让我对"一分钱一分货"这句话有了新的理解——不是越贵越好，是{result}的那个"刚刚好"最难得。如果你和我审美同频，放心入。'
+    ],
+    '情感':[
+      '{kw}的时候，突然想起一句话：{feeling}是心在说话，{result}是时间给的回答。别催自己，你已经在路上了。',
+      '深夜适合{kw}。安静的时候，那些白天藏起来的情绪都浮上来了。{feeling}，但没关系——好的坏的，都是{result}的一部分。好好睡，明天继续。',
+      '关于{kw}这件事，我学了很久才明白一个道理：{feeling}不是软弱，是需要停下来的信号；{result}不是逃避，是给自己留一点空间。允许一切发生。'
+    ]
+  },
+  xhs: {
+    '幽默':[
+      '标题：{kw}但结果是{result}｜人生就是这样充满惊喜\n\n出发前：我已经准备好了一切（自信）\n进行中：{feeling}（怀疑人生）\n结局：{result}（意外但满意）\n\n所以朋友们——计划赶不上变化，但变化往往比计划靠谱。放手去尝试吧。\n\n#真实 #翻车但快乐 #{kw}',
+      '标题：{kw}坦白局｜到底值不值得\n\n先说缺点：过程{feeling}，一度想放弃\n再说优点：结果{result}，真香\n\n综合评分：过程扣100分，结果加1000分。结论——值得！但下次不一定。\n\n#真实测评 #{kw} #翻车现场'
+    ],
+    '文艺':[
+      '标题：{kw}｜那些被我小心收藏的时刻\n\n今天{kw}了。\n风很轻，光线是暖调的金色。\n{feeling}，像喝了一口刚好温度的茶——不烫，但暖暖地到达了心里。\n\n我想这就是{result}的意义吧。不是轰轰烈烈的，而是这样安静、这样刚好。\n\n#质感生活 #{kw} #小确幸 #治愈',
+      '标题：{kw}｜一个普通下午的温柔\n\n没有安排、没有计划、没有必须要做的事。\n只有{kw}，和那种{feeling}的满足感。\n\n{result}。这个词本身就很美，不是吗？\n\n希望读到这里的你，今天也有一件让你{feeling}的小事。\n\n#慢生活 #{kw} #随手记 #生活美学'
+    ],
+    '沙雕':[
+      '标题：{kw}差点把我送走\n\n来，给姐妹们复盘一下今天：本来只想{kw}一下\n结果{feeling}，场面一度失控\n但最后居然{result}了！\n\n这是运气吗？是的。这是实力吗？不完全是。但我骄傲了吗？非常骄傲。\n\n#日常翻车 #{kw} #搞笑 #快乐源泉',
+      '标题：如果{kw}是一门课，我挂科了\n\n事情是这样的：看教程的时候——"这么简单？"\n实际操作的时候——{feeling}到怀疑自己是不是手残\n最终成果——{result}（虽然和想象中不太一样但硬要说的话也算成功了？）\n\n#手残党 #{kw} #真实分享'
+    ],
+    '励志':[
+      '标题：{kw}｜那些没人看见的努力时光\n\n坚持{kw}的第N天。\n朋友圈没人知道早上六点的闹钟，没人知道{feeling}的时候咬着牙继续的自己。\n\n但{result}知道。它一直在前面等着，等我一步一步走过去。\n\n今天想对自己说：辛苦了。也想对所有在坚持的人说：你比你想象的更值得。\n\n#自我成长 #{kw} #坚持 #女性力量',
+      '标题：{kw}之后，我变了\n\n从小白到能独当一面，这条路走了很久。中间{feeling}了很多次，想过无数次放弃。但每次停下来回头看，{result}已经在我身后了。\n\n所以我想说——别急。成长不是一蹴而就的，但每一步都算数。\n\n#成长日记 #{kw} #蜕变 #正能量'
+    ],
+    '种草':[
+      '标题：{kw}｜年度最值得的消费（没有之一）\n\n如果今年只能推荐一件东西：{kw}。\n\n不是最贵的，也不是最红的，但是{result}。\n从{feeling}到使用感受，每一个细节都经得起推敲。\n\n在这个"买什么都像在交智商税"的时代，它让我觉得——钱花得值。\n\n#好物推荐 #{kw} #消费升级 #不后悔系列',
+      '标题：{kw}深度测评｜用了一个月才敢写\n\n先说结论：{result}。\n再说感受：{feeling}，越用越觉得设计者是真的在用自己做的产品。\n\n我不是KOL，就是一个普通的消费者。但好东西值得被更多人知道。\n\n#真实测评 #{kw} #良心推荐 #提升幸福感好物'
+    ],
+    '情感':[
+      '标题：{kw}｜有些话放在这里比放在心里好\n\n最近总是在{kw}的时候想很多。\n关于未来、关于选择、关于那个不确定的自己。\n\n{feeling}。但我慢慢学会了——{result}。\n不需要一次做好所有的事，不需要一天变成更好的自己。\n慢慢来，今天也已经很棒了。\n\n#情绪日记 #{kw} #与自己和解 #治愈',
+      '标题：{kw}｜写给深夜失眠的你\n\n如果你也正在经历一段{feeling}的时期：\n\n没关系的。\n不是所有的黑夜都需要被填满，不是所有的情绪都需要被解决。\n{result}——这句话送给你，也送给我自己。\n\n我们都值得被温柔对待，尤其是被自己。\n\n#深夜树洞 #{kw} #自愈 #温柔'
+    ]
+  },
+  dy: {
+    '幽默':[
+      '{kw}是一种怎样的体验？答案：{feeling}中带着一丝{result}。不建议模仿，但模仿了也不亏。反正快乐是自己的。#真实 #{kw} #搞笑',
+      '挑战全网最离谱的{kw}！过程{feeling}到怀疑自己上辈子是不是欠了什么。但结局{result}我是真的没想到——所以永远不要提前认输。#挑战 #{kw} #意外惊喜',
+      '{kw}之前：这有什么难的？{kw}之后：{feeling}。对不起，是我年少轻狂了。下次还敢。#翻车日常 #{kw} #我又可以了'
+    ],
+    '文艺':[
+      '{kw}｜{feeling}的瞬间，像河水流过石头——安静但有力量。{result}。愿你也能找到这样的时刻。✨ #{kw} #治愈系 #慢生活',
+      '有时候，{kw}不是逃避，是把时间还给自己。{feeling}的时候，{result}自然而然地发生了。#{kw} #独处时光 #温柔'
+    ],
+    '沙雕':[
+      '{kw}迷惑行为大赏：我自己是冠军。{feeling}就算了，关键还{result}了。请问这是正常的吗？在线等，挺急的。#迷惑行为 #{kw} #沙雕',
+      '挑战{kw}的精彩瞬间——开头：优雅。中间：{feeling}。结尾：{result}。弹幕请把"离谱"打在公屏上。#挑战 #{kw} #离谱'
+    ],
+    '励志':[
+      '当你{kw}的时候，记住这句话——{feeling}是暂时的，{result}是必然的。你只需要做好今天的事，剩下的交给时间。🔥 #{kw} #正能量 #坚持',
+      '{kw}的过程可能{feeling}，但请相信——你正在变成一个更好的人。{result}，只是时间问题。#{kw} #成长 #蜕变'
+    ],
+    '种草':[
+      '如果只让我推荐一件东西：{kw}。{feeling}的体验，{result}的效果。不是广告，是花钱买出来的真心话。#好物推荐 #{kw} #不后悔',
+      '{kw}来了！用了之后{feeling}，{result}不说了直接看。建议先点赞收藏，万一以后用得到。#种草 #{kw} #真实'
+    ],
+    '情感':[
+      '{kw}的时候，允许自己{feeling}。不是每一天都必须元气满满——{result}，也是生活的一部分。💫 #{kw} #情感 #治愈',
+      '有些事{kw}之后才懂。{feeling}过，{result}过，但还好——没有放弃自己。#{kw} #深夜感悟 #与自己和解'
+    ]
+  }
+};
+
+const FEELINGS = {
+  '幽默':['哭笑不得','一地鸡毛','又气又好笑','喜感拉满','被自己整笑了','离谱中透露着一丝合理'],
+  '文艺':['安静而满足','被温柔包裹','像被秋天吻了一下','心像浸了水的海绵','软软的，微微发胀'],
+  '沙雕':['怀疑人生','笑到邻居敲门','人类的悲欢果然不相通','离谱到家了','一边崩溃一边哈哈哈'],
+  '励志':['咬着牙坚持','想放弃但又舍不得','虽然累但很清醒','被自己感动到了','比昨天多撑了十分钟'],
+  '种草':['相见恨晚','爱不释手','越用越惊喜','细节打动人心','每天想用八百遍'],
+  '情感':['鼻子突然酸了一下','心里软了一块','想说很多话又觉得算了','被戳中了','眼里进了沙子']
+};
+const RESULTS = {
+  '幽默':['快乐超标','今日份的笑声已到账','喜剧人实锤','值回票价','意外的惊喜'],
+  '文艺':['温柔的答案','被时光厚待的感觉','属于自己的圆满','不期而遇的治愈','内心秩序的建立'],
+  '沙雕':['人类的本质是真香','离谱但圆满','宝贵的反面教材','绝了但又没完全绝','可以吹一年'],
+  '励志':['看得见的进步','值得骄傲的改变','没辜负那个早起的自己','比想象中更接近了','配得上所有努力'],
+  '种草':['物超所值','品质生活的正确打开方式','买对了的快乐','相见恨晚的典范','不会闲置的宝藏'],
+  '情感':['学会的温柔','和自己和解的瞬间','成长留下的印记','终于释然的轻松','不被看见的勇敢']
+};
+
+// ============================
+// 超短文案模板 (5-10字，不含关键词)
+// ============================
+const ULTRA_SHORT = [
+  '路很长，慢慢走。','脚比路长。','出走的理由。','刚好遇见光。','今天不赶时间。',
+  '苦是清醒的代价。','早安的仪式感。','把自己寄到远方。','换个地方发呆。',
+  '该来的在路上。','别急，会好的。','今天的风很温柔。','不说话也很美好。',
+  '你比你想象的勇敢。','先完成，再完美。','一步一个脚印。','允许自己慢下来。',
+  '最好的时光是现在。','简单就是高级。','喜欢现在的自己。','对昨天说再见。',
+  '出发不需要理由。','累了就歇一歇。','答案在时间里。','给自己一个拥抱。',
+  '做自己的光。','不为谁而活。','安静是一种力量。','日子会发光的。',
+  '别怕重新开始。','值得被好好对待。','在变好的路上。','认真的样子最美。',
+  '放下也是一种得到。','快乐是自己给的。','走慢点也没关系。','心若向阳无惧悲伤。',
+  '温柔且有力量。','可以脆弱可以坚强。','做自己的太阳。','每一个今天都算数。',
+  '别弄丢了自己。','平凡但不平庸。','今天的努力是明天的底气。','保持可爱。',
+  '正在输入中…','电量满格。','今日份的好心情。','给生活比个耶。',
+  '来日方长。','风过无痕。','片刻即永恒。','活在当下。',
+];
+
+// 超短文案：从不含关键词的模板中精选
+function genUltraShort(kw) {
+  // 筛选不含关键词的模板
+  let pool = ULTRA_SHORT.filter(t => !t.includes(kw));
+  if (pool.length < 3) pool = ULTRA_SHORT; // fallback
+  // 随机打乱取5条
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 5);
+}
+
+function generateCopy(platform, kw, style, lengthType) {
+  // 仅保留超短模式，其他全部尝试API
+  if (lengthType === 'ultra') {
+    const options = genUltraShort(kw);
+    return '✨ 超短文案（5-10字）：\n\n' + options.map((t,i) => (i+1)+'. '+t).join('\n');
+  }
+  // 没有API时给提示
+  return null;
+}
+
+async function generateCopySmart() {
+  curKw = Q('kwInput').value.trim();
+  if (!curKw) { showOutput('请输入关键词再生成～'); return; }
+  
+  // 超短模式用本地
+  if (curLength === 'ultra') {
+    curOutput = generateCopy(curPlatform, curKw, curStyle, curLength);
+    showOutput(curOutput); return;
+  }
+  
+  // 有代理 → 走AI
+  if (true) {
+    Q('outputContent').classList.remove('hidden');
+    Q('outputContent').innerHTML = '<span style="color:#999">🤖 AI 正在生成…</span>';
+    const ai = await generateCopyAPI(curKw, curPlatform, curStyle, curLength);
+    if (ai) { curOutput = ai; showOutput(ai); return; }
+  }
+  
+  // 无API → 提示
+  showOutput('💡 请配置 API 获得更好的文案生成体验\n\n点击右上角 ⚙️ → 填入 DeepSeek Key → 保存\n免费获取：platform.deepseek.com');
+}
+
+// ============================
+// 诗词歌词数据库 + 搜索
+// ============================
+const POETRY_LYRIC_DB = [
+  // ===== 古诗词 (30+) =====
+  {type:'古诗词',text:'愿得一人心，白首不分离。',author:'卓文君',source:'《白头吟》',kw:['爱情','相守','承诺','深情','表白']},
+  {type:'古诗词',text:'死生契阔，与子成说。执子之手，与子偕老。',author:'诗经',source:'《击鼓》',kw:['爱情','誓言','婚姻','承诺','永恒']},
+  {type:'古诗词',text:'两情若是久长时，又岂在朝朝暮暮。',author:'秦观',source:'《鹊桥仙》',kw:['爱情','异地','深情','距离','坚持','异地恋']},
+  {type:'古诗词',text:'人生若只如初见，何事秋风悲画扇。',author:'纳兰性德',source:'《木兰花令》',kw:['遗憾','初见','怀念','伤感','回忆','人生']},
+  {type:'古诗词',text:'玲珑骰子安红豆，入骨相思知不知。',author:'温庭筠',source:'《南歌子》',kw:['相思','暗恋','深情','思念','刻骨']},
+  {type:'古诗词',text:'衣带渐宽终不悔，为伊消得人憔悴。',author:'柳永',source:'《蝶恋花》',kw:['付出','无悔','深情','执着','爱情','思念']},
+  {type:'古诗词',text:'问世间情为何物，直教生死相许。',author:'元好问',source:'《摸鱼儿》',kw:['爱情','深情','生死','追问','哲理']},
+  {type:'古诗词',text:'此情可待成追忆，只是当时已惘然。',author:'李商隐',source:'《锦瑟》',kw:['回忆','遗憾','错过','伤感','怀念','时间']},
+  {type:'古诗词',text:'山有木兮木有枝，心悦君兮君不知。',author:'佚名',source:'《越人歌》',kw:['暗恋','遗憾','表白','思念','单恋']},
+  {type:'古诗词',text:'思君如满月，夜夜减清辉。',author:'张九龄',source:'《赋得自君之出矣》',kw:['思念','相思','深情','等待','消沉']},
+  {type:'古诗词',text:'长风破浪会有时，直挂云帆济沧海。',author:'李白',source:'《行路难》',kw:['励志','信念','奋斗','坚持','逆境','梦想']},
+  {type:'古诗词',text:'行到水穷处，坐看云起时。',author:'王维',source:'《终南别业》',kw:['困境','转机','豁达','从容','禅意','放下']},
+  {type:'古诗词',text:'会当凌绝顶，一览众山小。',author:'杜甫',source:'《望岳》',kw:['励志','格局','超越','坚持','信念','成功']},
+  {type:'古诗词',text:'采菊东篱下，悠然见南山。',author:'陶渊明',source:'《饮酒》',kw:['田园','宁静','自由','悠闲','生活','简单']},
+  {type:'古诗词',text:'但愿人长久，千里共婵娟。',author:'苏轼',source:'《水调歌头》',kw:['思念','祝福','中秋','月亮','亲情','友情']},
+  {type:'古诗词',text:'山重水复疑无路，柳暗花明又一村。',author:'陆游',source:'《游山西村》',kw:['希望','困境','坚持','转机','励志']},
+  {type:'古诗词',text:'人生如逆旅，我亦是行人。',author:'苏轼',source:'《临江仙》',kw:['人生','豁达','通透','哲理','旅行']},
+  {type:'古诗词',text:'天生我材必有用，千金散尽还复来。',author:'李白',source:'《将进酒》',kw:['自信','豪迈','励志','才华','人生']},
+  {type:'古诗词',text:'莫愁前路无知己，天下谁人不识君。',author:'高适',source:'《别董大》',kw:['离别','友情','祝福','前程','朋友']},
+  {type:'古诗词',text:'曾经沧海难为水，除却巫山不是云。',author:'元稹',source:'《离思》',kw:['爱情','唯一','深情','经历','怀念']},
+  {type:'古诗词',text:'海内存知己，天涯若比邻。',author:'王勃',source:'《送杜少府之任蜀州》',kw:['友情','距离','离别','知己','朋友']},
+  {type:'古诗词',text:'春风得意马蹄疾，一日看尽长安花。',author:'孟郊',source:'《登科后》',kw:['成功','喜悦','得意','青春','奋斗']},
+  {type:'古诗词',text:'大漠孤烟直，长河落日圆。',author:'王维',source:'《使至塞上》',kw:['壮美','自然','旅行','孤独','辽阔']},
+  {type:'古诗词',text:'无边落木萧萧下，不尽长江滚滚来。',author:'杜甫',source:'《登高》',kw:['时光','流逝','感慨','自然','壮阔']},
+  {type:'古诗词',text:'醉卧沙场君莫笑，古来征战几人回。',author:'王翰',source:'《凉州词》',kw:['豪迈','战争','悲壮','洒脱','友情']},
+  {type:'古诗词',text:'此中有真意，欲辨已忘言。',author:'陶渊明',source:'《饮酒》',kw:['禅意','宁静','真意','自然','放下']},
+  {type:'古诗词',text:'竹杖芒鞋轻胜马，谁怕？一蓑烟雨任平生。',author:'苏轼',source:'《定风波》',kw:['豁达','洒脱','逆境','从容','人生']},
+  {type:'古诗词',text:'露从今夜白，月是故乡明。',author:'杜甫',source:'《月夜忆舍弟》',kw:['乡愁','思念','故乡','月亮','亲情']},
+  {type:'古诗词',text:'独在异乡为异客，每逢佳节倍思亲。',author:'王维',source:'《九月九日忆山东兄弟》',kw:['乡愁','思念','节日','亲情','孤独']},
+  {type:'古诗词',text:'桃花潭水深千尺，不及汪伦送我情。',author:'李白',source:'《赠汪伦》',kw:['友情','离别','深情','朋友','感恩']},
+
+  // ===== 现代诗 (15+) =====
+  {type:'现代诗',text:'面朝大海，春暖花开。',author:'海子',source:'《面朝大海》',kw:['向往','美好','希望','春天','简单','幸福']},
+  {type:'现代诗',text:'黑夜给了我黑色的眼睛，我却用它寻找光明。',author:'顾城',source:'《一代人》',kw:['希望','困境','光明','信念','坚持']},
+  {type:'现代诗',text:'从前的日色变得慢，车、马、邮件都慢，一生只够爱一个人。',author:'木心',source:'《从前慢》',kw:['回忆','深情','慢生活','爱情','时间','怀念']},
+  {type:'现代诗',text:'草在结它的种子，风在摇它的叶子，我们站着不说话，就十分美好。',author:'顾城',source:'《门前》',kw:['安静','美好','陪伴','自然','爱情','简单']},
+  {type:'现代诗',text:'如果有来生，要做一棵树，站成永恒，没有悲欢的姿势。',author:'三毛',source:'《说给自己听》',kw:['自由','来生','孤独','永恒','独立']},
+  {type:'现代诗',text:'你站在桥上看风景，看风景的人在楼上看你。',author:'卞之琳',source:'《断章》',kw:['视角','哲理','相对','风景','人生']},
+  {type:'现代诗',text:'所有的结局都已写好，所有的泪水也都已启程。',author:'席慕蓉',source:'《青春》',kw:['青春','伤感','宿命','遗憾','成长']},
+  {type:'现代诗',text:'卑鄙是卑鄙者的通行证，高尚是高尚者的墓志铭。',author:'北岛',source:'《回答》',kw:['讽刺','深刻','人性','社会','反思']},
+  {type:'现代诗',text:'为什么我的眼里常含泪水？因为我对这土地爱得深沉。',author:'艾青',source:'《我爱这土地》',kw:['爱国','深情','土地','热爱','家国']},
+  {type:'现代诗',text:'轻轻地我走了，正如我轻轻地来；我轻轻地招手，作别西天的云彩。',author:'徐志摩',source:'《再别康桥》',kw:['离别','轻柔','浪漫','诗意','怀念']},
+  {type:'现代诗',text:'一切都是命运，一切都是烟云。',author:'北岛',source:'《一切》',kw:['命运','虚无','接受','人生','感悟']},
+  {type:'现代诗',text:'青春是一本太仓促的书。',author:'席慕蓉',source:'《青春》',kw:['青春','遗憾','时间','成长','回忆']},
+  {type:'现代诗',text:'我达达的马蹄是美丽的错误，我不是归人，是个过客。',author:'郑愁予',source:'《错误》',kw:['错过','遗憾','过客','爱情','美丽']},
+  {type:'现代诗',text:'我想和你虚度时光，比如低头看鱼。',author:'李元胜',source:'《我想和你虚度时光》',kw:['陪伴','爱情','浪漫','时光','浪费']},
+  {type:'现代诗',text:'活在这珍贵的人间，太阳强烈，水波温柔。',author:'海子',source:'《活在这珍贵的人间》',kw:['生命','珍贵','美好','自然','人间']},
+
+  // ===== 名言 (15+) =====
+  {type:'名言',text:'世上本没有路，走的人多了，也便成了路。',author:'鲁迅',source:'《故乡》',kw:['开创','先行','勇气','励志','信念','希望']},
+  {type:'名言',text:'优于别人，并不高贵。真正的高贵，是优于过去的自己。',author:'海明威',source:'—',kw:['成长','超越','自省','励志','进步']},
+  {type:'名言',text:'一个人知道自己为什么而活，就可以忍受任何一种生活。',author:'尼采',source:'—',kw:['意义','坚持','忍耐','人生','目标']},
+  {type:'名言',text:'世上只有一种真正的英雄主义，就是在认清生活的真相后依然热爱生活。',author:'罗曼·罗兰',source:'—',kw:['英雄','热爱','生活','勇气','励志','真相']},
+  {type:'名言',text:'我们曾如此渴望命运的波澜，到最后才发现：人生最曼妙的风景，竟是内心的淡定与从容。',author:'杨绛',source:'《一百岁感言》',kw:['人生','从容','回归','淡定','智慧','成熟']},
+  {type:'名言',text:'你若爱，生活哪里都可爱。你若恨，生活哪里都可恨。',author:'丰子恺',source:'—',kw:['心态','生活','豁达','乐观','哲理','心境']},
+  {type:'名言',text:'人生的遗憾，莫过于轻易放弃了不该放弃的，固执坚持了不该坚持的。',author:'柏拉图',source:'—',kw:['遗憾','选择','智慧','放弃','坚持']},
+  {type:'名言',text:'花半秒钟看透事物本质的人，和花一辈子看不清的人，注定有截然不同的命运。',author:'《教父》',source:'—',kw:['认知','命运','洞察','智慧','格局','差距']},
+  {type:'名言',text:'人的一切痛苦，本质上都是对自己无能的愤怒。',author:'王小波',source:'—',kw:['痛苦','自省','无能','愤怒','成长']},
+  {type:'名言',text:'不必太纠结于当下，也不必太忧虑未来。人生没有无用的经历。',author:'村上春树',source:'—',kw:['焦虑','接纳','经历','人生','当下','未来']},
+  {type:'名言',text:'生命是一袭华美的袍，爬满了虱子。',author:'张爱玲',source:'《天才梦》',kw:['生命','表象','本质','华美','真相']},
+  {type:'名言',text:'每一个不曾起舞的日子，都是对生命的辜负。',author:'尼采',source:'—',kw:['生命','起舞','珍惜','励志','活着','意义']},
+  {type:'名言',text:'人可以被毁灭，但不能被打败。',author:'海明威',source:'《老人与海》',kw:['坚韧','不屈','勇气','励志','意志']},
+  {type:'名言',text:'世界以痛吻我，要我报之以歌。',author:'泰戈尔',source:'《飞鸟集》',kw:['苦难','乐观','坚强','治愈','人生']},
+  {type:'名言',text:'勇者愤怒，抽刃向更强者；怯者愤怒，抽刃向更弱者。',author:'鲁迅',source:'—',kw:['勇气','愤怒','强弱','人性','反思']},
+
+  // ===== 歌词 (25+) =====
+  {type:'歌词',text:'往后余生，风雪是你，平淡是你，清贫也是你。',author:'马良',source:'《往后余生》',kw:['爱情','相守','深情','陪伴','余生']},
+  {type:'歌词',text:'思念是一种很玄的东西，如影随形。',author:'王菲',source:'《我愿意》',kw:['思念','爱情','深情','执着','牵挂']},
+  {type:'歌词',text:'后来，我总算学会了如何去爱，可惜你早已远去消失在人海。',author:'刘若英',source:'《后来》',kw:['遗憾','错过','爱情','成长','告别']},
+  {type:'歌词',text:'我不怕千万人阻挡，只怕自己投降。',author:'五月天',source:'《倔强》',kw:['励志','坚持','信念','勇气','自我']},
+  {type:'歌词',text:'我曾经跨过山和大海，也穿过人山人海。',author:'朴树',source:'《平凡之路》',kw:['人生','经历','成长','豁达','旅行']},
+  {type:'歌词',text:'向前跑，迎着冷眼和嘲笑。',author:'GALA',source:'《追梦赤子心》',kw:['励志','奋斗','坚持','勇气','奔跑']},
+  {type:'歌词',text:'得不到的永远在骚动，被偏爱的都有恃无恐。',author:'陈奕迅',source:'《红玫瑰》',kw:['爱情','遗憾','人性','感悟','得失']},
+  {type:'歌词',text:'突然好想你，你会在哪里，过得快乐或委屈。',author:'五月天',source:'《突然好想你》',kw:['思念','爱情','遗憾','回忆','问候']},
+  {type:'歌词',text:'如果这都不算爱，我有什么好悲哀。',author:'张学友',source:'《如果这都不算爱》',kw:['爱情','疑问','深情','失望','悲哀']},
+  {type:'歌词',text:'生活不止眼前的苟且，还有诗和远方的田野。',author:'许巍',source:'《生活不止眼前的苟且》',kw:['生活','向往','自由','励志','远方','诗']},
+  {type:'歌词',text:'你是无意穿堂风，偏偏孤倨引山洪。',author:'买辣椒也用券',source:'《起风了》',kw:['爱情','缘分','命运','诗意','惊艳']},
+  {type:'歌词',text:'时间是让人猝不及防的东西。',author:'金玟岐',source:'《岁月神偷》',kw:['时间','成长','感悟','珍惜','流逝']},
+  {type:'歌词',text:'我要像梦一样自由，像天空一样坚强。',author:'汪峰',source:'《像梦一样自由》',kw:['自由','梦想','坚强','励志','天空']},
+  {type:'歌词',text:'一杯敬朝阳，一杯敬月光。',author:'毛不易',source:'《消愁》',kw:['生活','孤独','自我','治愈','敬酒']},
+  {type:'歌词',text:'像我这样优秀的人，本该灿烂过一生。',author:'毛不易',source:'《像我这样的人》',kw:['自嘲','优秀','人生','孤独','感慨']},
+  {type:'歌词',text:'如果再见不能红着眼，是否还能红着脸。',author:'王菲',source:'《匆匆那年》',kw:['告别','爱情','青春','再见','遗憾']},
+  {type:'歌词',text:'我遇见谁会有怎样的对白，我等的人他在多远的未来。',author:'孙燕姿',source:'《遇见》',kw:['缘分','等待','爱情','未来','对白']},
+  {type:'歌词',text:'因为我不知道下一辈子还是否能遇见你。',author:'张敬轩',source:'《只是太爱你》',kw:['珍惜','爱情','遇见','深情','下辈子']},
+  {type:'歌词',text:'那黑的终点可有光，那夜的尽头可会亮。',author:'五月天',source:'《成名在望》',kw:['希望','黑暗','坚持','励志','黎明']},
+  {type:'歌词',text:'从前初识这世间，万般流连，看着天边似在眼前。',author:'买辣椒也用券',source:'《起风了》',kw:['青春','初心','流连','回忆','美好']},
+  {type:'歌词',text:'把所有的春天都揉进了一个清晨。',author:'鹿先森乐队',source:'《春风十里》',kw:['春天','美好','浪漫','清晨','诗意']},
+  {type:'歌词',text:'想念是会呼吸的痛，它活在我身上所有角落。',author:'梁静茹',source:'《会呼吸的痛》',kw:['思念','痛苦','爱情','痛','呼吸']},
+  {type:'歌词',text:'明天你好，声音多渺小，却提醒我勇敢是什么。',author:'牛奶咖啡',source:'《明天你好》',kw:['明天','勇敢','励志','成长','希望']},
+  {type:'歌词',text:'平凡才是唯一的答案。',author:'朴树',source:'《平凡之路》',kw:['平凡','答案','人生','感悟','励志']},
+  {type:'歌词',text:'生如夏花之绚烂。',author:'朴树',source:'《生如夏花》',kw:['生命','绚烂','活着','精彩','励志','热情']},
+];
+
+let poetryMoodFilter = 'all';
+
+function searchPoetryLyric(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return POETRY_LYRIC_DB.filter(item => {
+    if (poetryMoodFilter !== 'all' && item.type !== poetryMoodFilter) return false;
+    const match = item.text.toLowerCase().includes(q)
+      || item.author.toLowerCase().includes(q)
+      || item.source.toLowerCase().includes(q)
+      || item.kw.some(k => k.includes(q));
+    return match;
+  });
+}
+
+function renderPoetryResults(aiResults) {
+  const container = Q('poetryResults');
+  const query = Q('poetrySearch').value.trim();
+  
+  // 本地搜索
+  const localResults = query ? searchPoetryLyric(query) : [];
+  
+  // AI结果（已按分类筛选）
+  const aiFiltered = aiResults || [];
+  
+  // 合并：AI在前，本地在后，去重
+  const allResults = [...aiFiltered];
+  localResults.forEach(lr => {
+    if (!allResults.find(r => r.text === lr.text && r.author === lr.author)) {
+      allResults.push(lr);
+    }
+  });
+  
+  if (!query && !aiFiltered.length) {
+    container.innerHTML = '<div style="color:#bbb;text-align:center;padding:20px">输入关键词搜索诗词和歌词 ✨</div>';
+    return;
+  }
+  
+  if (allResults.length === 0) {
+    container.innerHTML = '<div style="color:#bbb;text-align:center;padding:20px">没有匹配结果，试试其他关键词～<br><span style="font-size:12px">试试：思念 / 爱情 / 离别 / 励志 / 自由</span></div>';
+    return;
+  }
+  
+  // 按类型分组：只显示当前选中的类型
+  const groups = {};
+  allResults.forEach(item => {
+    const t = item.type;
+    if (!groups[t]) groups[t] = [];
+    groups[t].push(item);
+  });
+  
+  const typeEmoji = {古诗词:'🏮',现代诗:'✒️',名言:'💡',歌词:'🎵'};
+  const tagClass = {古诗词:'rc-tag-green',现代诗:'rc-tag-blue',名言:'rc-tag-green',歌词:'rc-tag-blue'};
+  
+  let html = '';
+  const typeOrder = ['古诗词','现代诗','名言','歌词'];
+  
+  typeOrder.forEach(type => {
+    const items = groups[type] || [];
+    if (items.length === 0) return;
+    html += `<div style="font-weight:700;font-size:14px;color:#2e7d32;margin:8px 0 6px;">${typeEmoji[type]||''} ${type} · ${items.length}条</div>`;
+    items.forEach(item => {
+      html += `
+        <div class="result-card">
+          <div class="rc-header">
+            <span class="rc-tag ${tagClass[type]||'rc-tag-green'}">${typeEmoji[type]||''} ${type}</span>
+            ${item.isAI ? '<span style="font-size:10px;color:var(--p);margin-left:4px;">AI</span>' : ''}
+          </div>
+          <div class="rc-text">${type==='歌词'?'「'+item.text+'」':item.text}</div>
+          <div class="rc-source">${item.author}${item.source?' · '+item.source:''}</div>
+          <button class="btn btn-sm btn-copy" onclick="copyText('${item.text.replace(/'/g,"\\'")} —— ${item.author}${item.source?' '+item.source:''}')">📋 复制</button>
+        </div>
+      `;
+    });
+  });
+  
+  container.innerHTML = html || '<div style="color:#bbb;text-align:center;padding:20px">当前分类下没有结果，切换分类试试～</div>';
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => toast('✅ 已复制！')).catch(() => {
+    const ta = document.createElement('textarea'); ta.value = text;
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    toast('✅ 已复制！');
+  });
+}
+
+// ============================
+// 破冰回复 —— 即兴组合式生成
+// ============================
+const REPLY_PARTS = {
+  '搭讪':{
+    开头:[
+      '你好！','嗨～','不好意思打扰了，','冒昧了，','那个…',
+      '我想了很久要不要说——','这可能需要一点勇气，'
+    ],
+    观察:[
+      '刚才看到你，','注意到你也在看这个，','你选的那个角度特别好，','你身上的气质让人很舒服，','你的穿搭很有品味，',
+      '看到你在看同一本书，','看你一个人站着，','你的笑容很感染人，'
+    ],
+    过渡:[
+      '忍不住想认识一下。','所以过来打个招呼。','就想说一声——你好。','觉得不打招呼会后悔。',
+      '在想怎么开口比较自然…最后决定直接说。','冒昧问一句——可以认识你吗？',
+    ],
+    收尾:[
+      '我叫XX。','没有别的意思，就是想认识一下。','如果你不介意的话。','希望没有太冒昧。',
+      '不管是点头还是摇头，至少我试过了。','就算被拒绝，也比什么都没说好。'
+    ]
+  },
+  '被夸':{
+    开头:[
+      '谢谢！','好开心～','啊，被发现了！','真的吗？谢谢！','有点不好意思了😊',
+      '哇，谢谢你注意到！'
+    ],
+    承接:[
+      '其实我只是做了该做的事，','太抬举我啦，','这是我一直努力的方向，',
+      '被有心人注意到，','能得到这样的认可，','比被很多人夸还开心。'
+    ],
+    收尾:[
+      '比被很多人夸还开心。','今天会因为这句话而变得不一样。','我也要继续加油。','让我觉得努力没有白费。','你也是个很细心的人呢。'
+    ]
+  },
+  '安慰':{
+    开头:[
+      '听说最近不太好，','虽然不知道该说什么，','不想说"别难过"这种话，','换作是谁都会难受的，',
+      '允许自己不开心——'
+    ],
+    共情:[
+      '换作是我也会很受不了的。','那确实很难熬。','你已经很努力了。','有时候就是会这样，没办法。',
+      '不是你的问题。','我能想象那种感受。','换成谁都会这样的。'
+    ],
+    陪伴:[
+      '但我想让你知道——我在。','不需要一个人扛着。','你想说话的时候我会听，不想说的话我就安静待着。',
+      '不用急着好起来。','累了就歇一歇，不是逃避。','随时可以找我，不管多晚。'
+    ],
+    收尾:[
+      '今天也已经很棒了。','你已经做得很好了。','慢慢来。','会好的——不是鸡汤，是真的。'
+    ]
+  },
+  '约会':{
+    开头:[
+      '好呀！','当然可以！','听起来不错！','我也一直想去那里！','正好最近想出去走走，',
+      '被邀请的感觉真好！'
+    ],
+    安排:[
+      '你安排了什么时间？','你方便的时间告诉我，','我看一下档期——应该没问题。','那就定你方便的时候吧。',
+      '周末应该可以，平时要看看情况。','具体哪天你定，我来配合。'
+    ],
+    收尾:[
+      '很期待和你见面。','谢谢你想到我。','到时候见！','先说到这里，到时候慢慢聊。'
+    ]
+  },
+  '拒绝':{
+    开头:[
+      '真的很感谢你的邀请，','谢谢你想到了我，','你的心意我收到了——','被人邀请的感觉很好，',
+      '非常想去，但是——','好遗憾，'
+    ],
+    理由:[
+      '最近时间实在排不开，','这段时间比较忙，','刚好撞上了之前的安排，','最近在赶一个项目，',
+      '手头有些事走不开，','最近状态不太好，不想扫兴，'
+    ],
+    补救:[
+      '改天换我约你，好吗？','下次一定！我主动找你。','等我忙完这一阵，认真的。',
+      '到时候请你吃好吃的补偿。','先欠你一次。','下次提前约，我优先排时间。'
+    ]
+  },
+  '道歉':{
+    开头:[
+      '对不起。','我想认真跟你说声抱歉。','关于那件事——','想了想，还是得跟你说：',
+      '我知道现在说可能有点晚，','不想让这件事就这么过去，'
+    ],
+    承认:[
+      '我意识到自己处理得不好。','当时没有站在你的角度想。','确实是我的问题——不找任何借口。',
+      '换作我是你，我也会难过。','我没有考虑到你的感受。','我太自以为是了。'
+    ],
+    承诺:[
+      '同样的错误不会再犯。','我会用行动弥补。','给我一个机会，好吗？',
+      '不希望因为这件事影响我们。','如果你愿意的话——我想当面道歉。'
+    ]
+  },
+  '尬聊':{
+    开头:[
+      '突然不知道该说什么了😅','空气安静了，','聊着聊着断片了，','话题好像聊完了——',
+      '沉默了几秒，但我不慌。'
+    ],
+    转场:[
+      '不如聊聊你最近有什么好玩的事？','你平时不工作的时候最喜欢做什么？','最近有没有看到什么有意思的东西？',
+      '换一个问题——你最近一次笑出声是因为什么？','说真的，我对你最好奇的是——'
+    ],
+    收尾:[
+      '我发现和你聊天很舒服，哪怕偶尔冷场。','好的聊天不需要一直填满。','沉默也没关系——我在。'
+    ]
+  },
+  '职场':{
+    开头:[
+      '关于这个项目，','有个想法想跟你同步，','方便聊几分钟吗？','想听听你的意见——',
+      '有件事想请你帮忙看看，'
+    ],
+    内容:[
+      '我梳理了几个方向，','目前的进展是这样的，','遇到了一个瓶颈，','我觉得你的经验比较丰富，',
+      '这个问题上你的判断一直很准，','先给你过目一下，'
+    ],
+    收尾:[
+      '你方便的时候找我。','不急，你先忙。','你的意见对我很重要。','多谢了！','需要什么支持随时说。'
+    ]
+  },
+  '日常':{
+    开头:[
+      '在干嘛？','今天怎么样？','突然想到你——','刚刚做了件事，第一个想到的就是你。',
+      '没什么事，就是想问问：','今天的你有比昨天开心一点吗？'
+    ],
+    分享:[
+      '我今天做了件有意思的事，','有一件小确幸想跟你分享，','刚刚看到个东西特别适合你，',
+      '路过一家店想起了你，','今天的天气特别好，适合和你聊天。'
+    ],
+    收尾:[
+      '总之——就是突然想你了。','好了，我的随机想念已送达。','不用回，只是想说这句话。'
+    ]
+  },
+  '表白':{
+    开头:[
+      '有些话想了很久，','我纠结了很长时间要不要说，','可能说完之后会后悔，但不说完会更后悔：',
+      '认识你这么久，有一件事越来越确定——','先说明：不是一时冲动。'
+    ],
+    核心:[
+      '我喜欢你。','我对你的感觉不只是朋友。','和你在一起的每一刻我都想重复。',
+      '你是我每天期待早安晚安的原因。','我想认真地问——你愿意和我在一起吗？'
+    ],
+    收尾:[
+      '你可以慢慢想，不管答案是什么，我都尊重。','不用现在回答——我只是想让你知道。',
+      '说出口需要勇气，但对你——我愿意。'
+    ]
+  },
+  '感谢':{
+    开头:[
+      '谢谢你。','不知道怎么表达才好，','真的很感谢你——','这次没有你的话，',
+      '想郑重其事地说声谢谢。'
+    ],
+    具体:[
+      '不只是因为结果，更是因为过程中你的耐心。','你花了时间和精力帮我，我都记得。',
+      '你让我相信世界上还是好人多。','这份情我先欠着。'
+    ],
+    收尾:[
+      '下次你需要的时候，我一定在。','有你这样的朋友是我的幸运。','好了，煽情完毕——但都是认真的。'
+    ]
+  }
+};
+
+// ============================
+// 破冰回复 —— 纯随机组合引擎
+// ============================
+
+// 情绪词库
+const MOOD = {
+  neg_open: ['害，','唉…','抱抱，','没事的，','懂的，','确实，','谁说不是呢，','哎，','心疼一秒，'],
+  neg_mid:  ['有时候就是这样，','生活嘛，','谁还没个低谷，','撑过去就好了，','别硬扛，','对自己好一点，','该歇就歇，'],
+  neg_close:['会好的。','明天又是新的一天。','你比想象中坚强。','不急，慢慢来。','今天也已经很棒了。'],
+  pos_open: ['哇！','太棒了吧！','真的吗！','好家伙，','可以啊！','这也太酷了，','厉害了，'],
+  pos_mid:  ['替你开心！','值得庆祝！','不愧是你，','好消息要分享，','这种快乐会传染，'],
+  pos_close:['继续保持！','今天运气不错！','下次带上我！','发来贺电！'],
+  q_open:   ['嗯…','我想想啊，','这个问题问得好，','让我组织一下语言，','好问题，'],
+  q_mid:    ['我的看法是：','我觉得吧，','从我的经验来说，','说实话，','认真想了想——'],
+  q_close:  ['你觉得呢？','你怎么看？','这是我的想法。','不一定对。'],
+  humor:    ['笑死，','救命啊，','哈哈哈哈哈，','我真的会谢，','离谱，','绝了，','过于真实，','绷不住了，'],
+  warm:     ['在呢。','我懂。','没关系。','可以的。','慢慢来。','不急。','都会好的。','辛苦了。'],
+};
+
+// 场景基调词
+const SCENE_TONE = {
+  '搭讪': {open:['嗨～','你好！','打扰一下，','那个…','不好意思，'],mid:['很少遇到这样的，','忍不住想认识，','感觉你挺特别的，','莫名想打个招呼，'],close:['可以认识一下吗？','交个朋友？','希望没有太冒昧。']},
+  '安慰': {open:MOOD.neg_open,mid:MOOD.neg_mid,close:MOOD.neg_close},
+  '被夸': {open:['谢谢！','啊这，','哈哈，','哇，','天哪，'],mid:['其实没什么的，','我也没想到，','主要是运气好，','一直有在努力，'],close:['你也很棒！','共勉！','一起加油！']},
+  '约会': {open:['好呀！','当然！','可以！','安排！','走起！'],mid:['什么时候方便？','你定时间，','我都可以，','就等你这句话呢，'],close:['期待！','到时候见！','不见不散！']},
+  '拒绝': {open:['不好意思啊，','抱歉抱歉，','这次可能不行，','好遗憾，'],mid:['最近实在太忙了，','刚好撞上了安排，','手头有事走不开，'],close:['下次一定！','改天补上！','先欠着！']},
+  '道歉': {open:['对不起。','抱歉，','是我的问题。','唉，'],mid:['没有考虑周全，','太冲动了，','应该先问问你的，'],close:['以后不会了。','原谅我一次？','请你吃饭赔罪。']},
+  '职场': {open:['关于这个，','说下我的想法，','目前的情况是，','我梳理了一下，'],mid:['有几个方向可以考虑，','想听听你的意见，','需要你帮忙看看，'],close:['方便的时候聊？','多谢！','有进展同步你。']},
+  '日常': {open:['在干嘛？','今天怎么样？','突然想到你，','嘿，'],mid:['有个好玩的事，','刚看到个东西，','最近有部不错的，'],close:['想你了。','没事，就是问问。']},
+  '尬聊': {open:['嗯…','那个…','说起来，','对了，'],mid:['最近有看什么吗？','你平时喜欢做什么？','突然好奇——'],close:['随便聊聊。','不想说也没事。']},
+  '表白': {open:['有件事想说…','纠结了很久，','不知道怎么说，','认真的，'],mid:['和你在一起很开心，','每天都很期待见到你，','越来越确定一件事，'],close:['我喜欢你。','可以考虑一下吗？','不用马上回答。']},
+  '感谢': {open:['谢谢！','太感谢了！','不知道怎么谢你，'],mid:['帮了大忙了，','没有你真不行，','这份情我记住了，'],close:['下次换我！','请你吃饭！']},
+};
+
+// 随机填充词
+const FILLER = ['嗯','就是','怎么说呢','反正','就还挺','其实','说实话','讲真','有一说一'];
+
+function genReply() {
+  const raw = Q('iceInput').value.trim();
+  const tone = SCENE_TONE[curScene] || SCENE_TONE['日常'];
+  const style = curReplyStyle;
+  
+  // 分析输入
+  const isNeg = /累|烦|崩溃|压力|焦虑|难过|伤心|抑郁|丧|惨/.test(raw);
+  const isPos = /开心|快乐|棒|赞|厉害|牛|优秀|爱|喜欢|美好/.test(raw);
+  const isQ = /[？?]/.test(raw);
+  const isCold = /^[哦嗯啊额呵噢]{1,6}[～~！!。.,，…\s]*$/.test(raw) || /^(.)\1{2,}[～~！!。.,，…\s]*$/.test(raw);
+  const isLaugh = /^[哈嘿嘻呵嘎吼嗤]{3,}[～~！!。.,，…\s]*$/.test(raw);
+  
+  let result = '';
+  
+  // === 特殊拦截 ===
+  if (isCold) {
+    if (style === '幽默') {
+      result = R(['感受到了敷衍😆 我换个方向——'+R(tone.open||[''])+R(tone.mid||[''])+R(tone.close||['']),
+        '信号强度接近零…正在搜寻新话题🔍'+R(tone.mid||[''])+R(tone.close||[''])]);
+    } else {
+      result = R(tone.open||['']) + R(tone.mid||['']) + R(tone.close||['']);
+    }
+    curReplyText = result; return result;
+  }
+  
+  if (isLaugh) {
+    if (style === '幽默') {
+      result = R(MOOD.humor) + '什么事这么好笑？分享给我听听！';
+    } else {
+      result = R(['什么事这么开心？','笑成这样，快说说！','分享一下嘛！']);
+    }
+    curReplyText = result; return result;
+  }
+  
+  // === 核心：随机组合 ===
+  // 每次从4个策略中随机选一个，确保回复多样性
+  const strategy = Math.floor(Math.random() * 4);
+  
+  switch(strategy) {
+    case 0: // 情绪回应型
+      if (isNeg) {
+        result = R(MOOD.neg_open) + R(MOOD.neg_mid) + R(MOOD.neg_close);
+      } else if (isPos) {
+        result = R(MOOD.pos_open) + R(MOOD.pos_mid) + R(MOOD.pos_close);
+      } else if (isQ) {
+        result = R(MOOD.q_open) + R(MOOD.q_mid) + R(MOOD.q_close);
+      } else {
+        result = R(tone.open) + R(tone.mid) + R(tone.close);
+      }
+      break;
+      
+    case 1: // 场景驱动型
+      result = R(tone.open) + (Math.random()>.5?R(FILLER):'') + R(tone.mid) + R(tone.close);
+      break;
+      
+    case 2: // 混合型：一半情绪一半场景
+      if (isNeg) {
+        result = R(MOOD.neg_open) + R(tone.mid) + R(MOOD.neg_close);
+      } else if (isPos) {
+        result = R(MOOD.pos_open) + R(tone.mid) + R(MOOD.pos_close);
+      } else {
+        result = R(tone.open) + R(MOOD.q_mid) + R(tone.close);
+      }
+      break;
+      
+    case 3: // 温暖直球型（高情商专属）
+      if (style === '高情商') {
+        result = R(MOOD.warm) + R(tone.mid) + R(MOOD.warm);
+      } else {
+        result = R(tone.open) + (Math.random()>.7?R(MOOD.humor):R(MOOD.warm)) + R(tone.close);
+      }
+      break;
+  }
+  
+  // 后处理
+  result = result.replace(/\s+/g, '').replace(/[，,]{2,}/g,'，').replace(/[。！？]{2,}/g,m=>m[0]);
+  if (result.length > 90) result = result.slice(0, 87) + '…';
+  if (!result || result.length < 3) result = R(tone.open)+R(tone.mid)+R(tone.close);
+  
+  curReplyText = result;
+  return curReplyText;
+}
+
+let curScene = '搭讪', curReplyStyle = '破冰', curReplyText = '';
+
+// ============================
+// API 集成
+// ============================
+// ============================
+// API 代理（走本地服务器，保护Key）
+// ============================
+const PROXY_URL = 'http://localhost:3000';
+
+async function callProxy(endpoint, body) {
+  try {
+    const resp = await fetch(PROXY_URL + endpoint, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    return data.success ? data : null;
+  } catch(e) { return null; }
+}
+
+// 所有API函数改为走代理
+async function generateCopyAPI(keyword, platform, style, lengthType) {
+  if (!keyword) return null;
+  const r = await callProxy('/api/copywriting', { keyword, platform, style, lengthType });
+  return r ? r.text : null;
+}
+async function generateReplyAPI(scene, userInput, replyStyle) {
+  const r = await callProxy('/api/reply', { scene, userInput, replyStyle });
+  return r ? r.text : null;
+}
+async function chatWithAI(userMsg) {
+  const r = await callProxy('/api/chat', { message: userMsg });
+  return r ? r.text : null;
+}
+async function searchPoetryAPI(keyword) {
+  const r = await callProxy('/api/poetry', { keyword, typeFilter: poetryMoodFilter });
+  return r ? r.items.map(i => ({ ...i, source: '', isAI: true })) : null;
+}
+async function genReplySmart() {
+  const ai = await generateReplyAPI(curScene, Q('iceInput').value.trim(), curReplyStyle);
+  if (ai) { curReplyText = ai; return ai; }
+  return genReply();
+}
+
+// 简化的API状态（代理模式无需用户配Key）
+function updateApiStatus() {
+  Q('apiStatus').textContent = '✅ 服务器代理模式';
+}
+function loadApiConfig() {
+  updateApiUI();
+  updateApiStatus();
+}
+// 平台切换
+Q('platformTabs').addEventListener('click', e => {
+  const tab = e.target.closest('.platform-tab');
+  if (!tab) return;
+  Q('platformTabs').querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  curPlatform = tab.dataset.p;
+});
+
+// 风格切换
+Q('styleGroup').addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  Q('styleGroup').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  curStyle = chip.dataset.s;
+});
+
+// 长度
+Q('lenSelect').addEventListener('change', () => { curLength = Q('lenSelect').value; });
+
+// 生成文案
+function doGenerate() {
+  generateCopySmart();
+}
+function showOutput(text) {
+  Q('placeholder').classList.add('hidden');
+  Q('outputContent').classList.remove('hidden');
+  Q('outputActions').classList.remove('hidden');
+  const pi = {pyq:{emoji:'💚',name:'朋友圈',badge:'badge-pyq'},xhs:{emoji:'❤️',name:'小红书',badge:'badge-xhs'},dy:{emoji:'🎵',name:'抖音',badge:'badge-dy'}}[curPlatform];
+  Q('outputContent').innerHTML = '<span class="platform-badge '+pi.badge+'">'+pi.emoji+' '+pi.name+'</span>\n'+text.replace(/\n/g,'<br>').replace(/#(\S+)/g,'<span style="color:var(--p);font-weight:600">#$1</span>');
+  curOutput = text;
+}
+Q('genBtn').addEventListener('click', doGenerate);
+Q('regenBtn').addEventListener('click', doGenerate);
+Q('regenBtn2').addEventListener('click', doGenerate);
+Q('kwInput').addEventListener('keydown', e => { if (e.key==='Enter') doGenerate(); });
+
+// 复制
+Q('copyBtn').addEventListener('click', () => copyText(curOutput));
+
+// 收藏文案
+Q('favBtn').addEventListener('click', () => {
+  const exist = favorites.find(f => f.text === curOutput);
+  if (exist) { favorites = favorites.filter(f => f.text !== curOutput); toast('已取消收藏'); }
+  else { favorites.unshift({text:curOutput,time:Date.now()}); toast('❤️ 已收藏！'); }
+  saveFavs();
+});
+
+// AI诗词搜索按钮
+Q('aiSearchBtn').addEventListener('click', async () => {
+  const kw = Q('poetrySearch').value.trim();
+  if (!kw) return;
+  Q('aiSearchStatus').textContent = '搜索中…';
+  const results = await searchPoetryAPI(kw);
+  Q('aiSearchStatus').textContent = results ? '✅ AI搜索完成' : '搜索失败';
+  renderPoetryResults(results || []);
+});
+
+function updateApiUI() {
+  updateApiStatus();
+  Q('aiSearchBtn').style.display = apiConfig.key ? '' : 'none';
+}
+
+// 本地搜索
+let poetrySearchTimer;
+Q('poetrySearch').addEventListener('input', () => {
+  clearTimeout(poetrySearchTimer);
+  poetrySearchTimer = setTimeout(() => renderPoetryResults(), 300);
+});
+Q('poetryMoodTabs').addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  Q('poetryMoodTabs').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  poetryMoodFilter = chip.dataset.m;
+  renderPoetryResults();
+});
+
+// 破冰
+Q('sceneTabs').addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  Q('sceneTabs').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  curScene = chip.dataset.sc;
+});
+Q('replyStyleGroup').addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  Q('replyStyleGroup').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  curReplyStyle = chip.dataset.rs;
+});
+function canReply() { return isPremium || chatUsage < CHAT_LIMIT; }
+Q('genReplyBtn').addEventListener('click', async () => {
+  if (!canReply()) { Q('upgradeModal').classList.add('show'); return; }
+  const reply = await genReplySmart();
+  Q('replyOutput').innerHTML = '<div style="animation:fadeIn .3s ease">'+reply.replace(/\n/g,'<br>')+'</div>';
+  Q('replyActions').classList.remove('hidden');
+  if (!isPremium) { chatUsage++; localStorage.setItem('wcUsage', chatUsage); }
+  updateUsageUI();
+});
+Q('iceInput').addEventListener('keydown', e => { if (e.key==='Enter') Q('genReplyBtn').click(); });
+Q('copyReplyBtn').addEventListener('click', () => copyText(curReplyText));
+Q('favReplyBtn').addEventListener('click', () => {
+  if (!curReplyText) return;
+  const exist = favorites.find(f => f.text === curReplyText);
+  if (exist) { favorites = favorites.filter(f => f.text !== curReplyText); toast('已取消收藏'); }
+  else { favorites.unshift({text:curReplyText,time:Date.now()}); toast('❤️ 已收藏！'); }
+  saveFavs();
+});
+
+// 使用次数
+function updateUsageUI() {
+  const bar = Q('usageBar');
+  const txt = Q('usageText');
+  const dots = Q('usageDots');
+  const btn = Q('upgradeBtn');
+  if (isPremium) {
+    bar.className = 'usage-bar free';
+    dots.innerHTML = '<span style="font-size:14px">♾️</span>';
+    txt.textContent = '高级版 · 无限使用';
+    btn.style.display = 'none';
+    Q('resetBtn').style.display = '';
+  } else {
+    const remain = Math.max(0, CHAT_LIMIT - chatUsage);
+    dots.innerHTML = Array.from({length:CHAT_LIMIT},(_,i)=>'<span class="usage-dot'+(i<chatUsage?' used':'')+'"></span>').join('');
+    btn.style.display = '';
+    Q('resetBtn').style.display = 'none';
+    if (chatUsage >= CHAT_LIMIT) {
+      bar.className = 'usage-bar limit'; txt.textContent = '已用完 — 请升级'; btn.textContent = '🚀 立即升级';
+    } else {
+      bar.className = 'usage-bar free'; txt.textContent = '剩余 '+remain+' 次'; btn.textContent = '🚀 升级高级版';
+    }
+  }
+}
+
+// ===== 升级系统 =====
+let selectedPlan = 'monthly';
+Q('planMonthly').addEventListener('click',()=>{selectedPlan='monthly';Q('planMonthly').classList.add('sel');Q('planYearly').classList.remove('sel')});
+Q('planYearly').addEventListener('click',()=>{selectedPlan='yearly';Q('planYearly').classList.add('sel');Q('planMonthly').classList.remove('sel')});
+Q('closeModalBtn').addEventListener('click',()=>Q('upgradeModal').classList.remove('show'));
+Q('upgradeModal').addEventListener('click',e=>{if(e.target===Q('upgradeModal'))Q('upgradeModal').classList.remove('show')});
+Q('upgradeBtn').addEventListener('click',()=>Q('upgradeModal').classList.add('show'));
+Q('payBtn').addEventListener('click',()=>{
+  isPremium = true; localStorage.setItem('wcPremium','true');
+  chatUsage = 0; localStorage.setItem('wcUsage','0');
+  updateUsageUI();
+  Q('upgradeModal').classList.remove('show');
+  const pn = selectedPlan==='yearly'?'年卡':'月卡';
+  const pp = selectedPlan==='yearly'?'¥99':'¥9.9';
+  toast('🎉 支付成功！已开通'+pn+'（'+pp+'），破冰回复永久无限使用');
+});
+// 退出高级版
+Q('resetBtn').addEventListener('click',()=>{
+  isPremium = false; localStorage.removeItem('wcPremium');
+  chatUsage = 0; localStorage.setItem('wcUsage','0');
+  updateUsageUI();
+  toast('↩ 已退出高级版，恢复免费试用（3次）');
+});
+
+// AI聊天
+// AI 聊天（全功能助手）
+async function chatWithAI(userMsg) {
+  if (!apiConfig.key) return null;
+  const prompt = `你是"当代余华"的全能AI助手。你的能力包括：
+1. 帮用户写社交媒体文案（朋友圈/小红书/抖音），根据风格（幽默/文艺/沙雕/励志/种草/情感）生成创意文案
+2. 提供古诗词、现代诗、名言警句、歌词——用户问"关于月亮的诗""励志歌词"时，从你的知识中挑选经典作品
+3. 回答网站使用问题——怎么切换平台、怎么改风格、怎么搜诗词、怎么用破冰助手等
+4. 日常聊天——可以闲聊、安慰、给建议
+
+网站功能简介：顶部生成文案（选平台+风格+长度），📖诗词歌词区可搜索关键词找诗词和歌词，💬破冰助手选场景后生成高情商回复，右侧⚙️可配置API。
+
+用户说："${userMsg}"
+请自然、简洁地回复。如果是诗词类问题，给出完整诗句+作者+出处。50-150字。`;
+  return await callAI(prompt, userMsg);
+}
+
+Q('chatSendBtn').addEventListener('click', async () => {
+  const txt = Q('chatInput').value.trim();
+  if (!txt) return;
+  addMsg('user', txt);
+  Q('chatInput').value = '';
+  
+  // 代理模式
+  const thinking = addMsg('ai', '思考中…');
+  const aiReply = await chatWithAI(txt);
+  thinking.remove();
+  if (aiReply) { addMsg('ai', aiReply); return; }
+  
+  // fallback 本地
+  setTimeout(() => {
+    let r = '';
+    if (txt.includes('你好')||txt.includes('嗨')) r = '你好呀！👋 想写什么文案？直接告诉我就好～';
+    else if (txt.includes('诗')||txt.includes('词')||txt.includes('名言')||txt.includes('歌词')) r = '试试在📖诗词歌词区搜索关键词，输入"思念""励志""爱情"能找到很多诗词和歌词哦～';
+    else if (txt.includes('怎么用')||txt.includes('如何')||txt.includes('教程')) r = '💡 使用指南：顶部选平台+风格生成文案；📖诗词歌词区搜关键词找诗词歌词；💬破冰助手选场景生成回复。右上角⚙️可配置API获得更智能的回复。';
+    else if (txt.includes('小红书')) { curPlatform='xhs'; updatePlatformUI(); r = '切到小红书模式！输入关键词生成～'; }
+    else if (txt.includes('朋友圈')) { curPlatform='pyq'; updatePlatformUI(); r = '切到朋友圈！想发什么？'; }
+    else if (txt.includes('抖音')) { curPlatform='dy'; updatePlatformUI(); r = '切到抖音！来条短视频文案？'; }
+    else if (txt.includes('幽默')||txt.includes('搞笑')) { curStyle='幽默'; r = '幽默模式😄'; }
+    else if (txt.includes('文艺')) { curStyle='文艺'; r = '文艺风来了🌸'; }
+    else if (txt.includes('励志')) { curStyle='励志'; r = '给你打打鸡血💪'; }
+    else if (txt.includes('种草')) { curStyle='种草'; r = '种草模式🌿'; }
+    else if (txt.includes('换一个')||txt.includes('再来')) { generateCopySmart(); r = '来～ 看看这条！'; }
+    else {
+      const kw = txt.replace(/^(帮我写|我要|来一条|想要|写)\s*/g,'').trim();
+      if (kw) { Q('kwInput').value = kw; curKw = kw; generateCopySmart(); r = '好呀！以「'+kw+'」为主题写了一条，看看喜不喜欢？✨'; }
+      else { r = '嗯嗯，跟我说说你想写什么样的文案？或者问我古诗词、歌词也可以～'; }
+    }
+    addMsg('ai', r);
+  }, 300);
+});
+
+function updatePlatformUI() {
+  Q('platformTabs').querySelectorAll('.platform-tab').forEach(t => {
+    t.classList.remove('active');
+    if (t.dataset.p === curPlatform) t.classList.add('active');
+  });
+}
+Q('chatInput').addEventListener('keydown', e => { if (e.key==='Enter') Q('chatSendBtn').click(); });
+
+function addMsg(type, text) {
+  const msg = document.createElement('div');
+  msg.className = 'msg '+type;
+  msg.textContent = text;
+  Q('chatBox').appendChild(msg);
+  Q('chatBox').scrollTop = Q('chatBox').scrollHeight;
+  return msg;
+}
+
+// 收藏
+function saveFavs() { localStorage.setItem('wcFav', JSON.stringify(favorites)); updateFavUI(); }
+function updateFavUI() {
+  Q('favCount').textContent = favorites.length;
+}
+Q('openFavBtn').addEventListener('click', () => {
+  if (favorites.length===0) { toast('还没有收藏哦～'); return; }
+  alert('收藏列表（共'+favorites.length+'条）：\n\n'+favorites.map((f,i)=>(i+1)+'. '+f.text).join('\n\n'));
+});
+
+// ============================
+// 初始化
+// ============================
+function init() {
+  loadApiConfig();
+  updateUsageUI();
+  updateFavUI();
+  const last = localStorage.getItem('wcLast');
+  if (last) { curOutput = last; showOutput(last); }
+}
+init();
+</script>
+</body>
+</html>
