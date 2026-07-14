@@ -164,7 +164,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;backg
     <div class="ct"><span class="icon">📖</span>诗词歌词 <span style="font-size:12px;font-weight:400;color:var(--tl);margin-left:auto">输入关键词 → 诗词 + 歌词</span></div>
     <input type="text" class="search-input" id="poetrySearch" placeholder="🔍 试试：思念、爱情、离别、励志、自由、遗憾…" maxlength="20">
     <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-      <button class="btn btn-sm btn-p" id="aiSearchBtn" style="font-size:11px;padding:5px 12px;display:none;">🤖 DeepSeek 搜索</button>
+      <button class="btn btn-sm btn-p" id="aiSearchBtn" style="font-size:11px;padding:5px 12px;">🤖 DeepSeek 搜索</button>
       <span id="aiSearchStatus" style="font-size:11px;color:var(--tl);align-self:center;"></span>
     </div>
     <div class="mood-tabs" id="poetryMoodTabs">
@@ -484,22 +484,13 @@ async function generateCopySmart() {
   curKw = Q('kwInput').value.trim();
   if (!curKw) { showOutput('请输入关键词再生成～'); return; }
   
-  // 超短模式用本地
-  if (curLength === 'ultra') {
-    curOutput = generateCopy(curPlatform, curKw, curStyle, curLength);
-    showOutput(curOutput); return;
-  }
+  Q('outputContent').classList.remove('hidden');
+  Q('outputContent').innerHTML = '<span style="color:#999">🤖 AI 正在生成…</span>';
+  const ai = await generateCopyAPI(curKw, curPlatform, curStyle, curLength);
+  if (ai) { curOutput = ai; showOutput(ai); return; }
   
-  // 有代理 → 走AI
-  if (true) {
-    Q('outputContent').classList.remove('hidden');
-    Q('outputContent').innerHTML = '<span style="color:#999">🤖 AI 正在生成…</span>';
-    const ai = await generateCopyAPI(curKw, curPlatform, curStyle, curLength);
-    if (ai) { curOutput = ai; showOutput(ai); return; }
-  }
-  
-  // 无API → 提示
-  showOutput('💡 请配置 API 获得更好的文案生成体验\n\n点击右上角 ⚙️ → 填入 DeepSeek Key → 保存\n免费获取：platform.deepseek.com');
+  // fallback 提示
+  showOutput('请确保服务器已启动：node server.js');
 }
 
 // ============================
@@ -643,12 +634,20 @@ function renderPoetryResults(aiResults) {
     return;
   }
   
-  // 按类型分组：只显示当前选中的类型
+  // 按类型分组：统一类型名
+  const normalizeType = (t) => {
+    if (t.includes('现代')||t.includes('现')) return '现代诗';
+    if (t.includes('古')||t.includes('诗')) return '古诗词';
+    if (t.includes('名')||t.includes('言')||t.includes('警')) return '名言';
+    if (t.includes('歌')||t.includes('词')||t.includes('曲')) return '歌词';
+    return '古诗词';
+  };
+  
   const groups = {};
   allResults.forEach(item => {
-    const t = item.type;
+    const t = normalizeType(item.type);
     if (!groups[t]) groups[t] = [];
-    groups[t].push(item);
+    groups[t].push({ ...item, type: t });
   });
   
   const typeEmoji = {古诗词:'🏮',现代诗:'✒️',名言:'💡',歌词:'🎵'};
@@ -658,6 +657,8 @@ function renderPoetryResults(aiResults) {
   const typeOrder = ['古诗词','现代诗','名言','歌词'];
   
   typeOrder.forEach(type => {
+    // 如果用户选了分类筛选，只显示该类型
+    if (poetryMoodFilter !== 'all' && normalizeType(poetryMoodFilter) !== type) return;
     const items = groups[type] || [];
     if (items.length === 0) return;
     html += `<div style="font-weight:700;font-size:14px;color:#2e7d32;margin:8px 0 6px;">${typeEmoji[type]||''} ${type} · ${items.length}条</div>`;
@@ -976,7 +977,7 @@ let curScene = '搭讪', curReplyStyle = '破冰', curReplyText = '';
 // ============================
 // API 代理（走本地服务器，保护Key）
 // ============================
-const PROXY_URL = 'http://localhost:3000';
+const PROXY_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
 
 async function callProxy(endpoint, body) {
   try {
@@ -987,7 +988,7 @@ async function callProxy(endpoint, body) {
     if (!resp.ok) return null;
     const data = await resp.json();
     return data.success ? data : null;
-  } catch(e) { return null; }
+  } catch(e) { console.error('API Error:', e); return null; }
 }
 
 // 所有API函数改为走代理
@@ -1071,26 +1072,30 @@ Q('favBtn').addEventListener('click', () => {
   saveFavs();
 });
 
-// AI诗词搜索按钮
+// AI搜索按钮 - 始终显示
+Q('aiSearchBtn').style.display = '';
+function updateApiUI() { Q('aiSearchBtn').style.display = ''; }
 Q('aiSearchBtn').addEventListener('click', async () => {
   const kw = Q('poetrySearch').value.trim();
   if (!kw) return;
   Q('aiSearchStatus').textContent = '搜索中…';
   const results = await searchPoetryAPI(kw);
-  Q('aiSearchStatus').textContent = results ? '✅ AI搜索完成' : '搜索失败';
+  Q('aiSearchStatus').textContent = results ? '✅ 完成' : '失败';
   renderPoetryResults(results || []);
 });
 
-function updateApiUI() {
-  updateApiStatus();
-  Q('aiSearchBtn').style.display = apiConfig.key ? '' : 'none';
-}
-
-// 本地搜索
+// 本地搜索 + 自动AI搜索
 let poetrySearchTimer;
 Q('poetrySearch').addEventListener('input', () => {
   clearTimeout(poetrySearchTimer);
-  poetrySearchTimer = setTimeout(() => renderPoetryResults(), 300);
+  poetrySearchTimer = setTimeout(async () => {
+    renderPoetryResults(); // 先显示本地结果
+    const kw = Q('poetrySearch').value.trim();
+    if (kw) {
+      const aiResults = await searchPoetryAPI(kw);
+      if (aiResults && aiResults.length > 0) renderPoetryResults(aiResults);
+    }
+  }, 500);
 });
 Q('poetryMoodTabs').addEventListener('click', e => {
   const chip = e.target.closest('.chip');
@@ -1207,33 +1212,17 @@ Q('chatSendBtn').addEventListener('click', async () => {
   addMsg('user', txt);
   Q('chatInput').value = '';
   
-  // 代理模式
-  const thinking = addMsg('ai', '思考中…');
-  const aiReply = await chatWithAI(txt);
-  thinking.remove();
-  if (aiReply) { addMsg('ai', aiReply); return; }
-  
-  // fallback 本地
-  setTimeout(() => {
-    let r = '';
-    if (txt.includes('你好')||txt.includes('嗨')) r = '你好呀！👋 想写什么文案？直接告诉我就好～';
-    else if (txt.includes('诗')||txt.includes('词')||txt.includes('名言')||txt.includes('歌词')) r = '试试在📖诗词歌词区搜索关键词，输入"思念""励志""爱情"能找到很多诗词和歌词哦～';
-    else if (txt.includes('怎么用')||txt.includes('如何')||txt.includes('教程')) r = '💡 使用指南：顶部选平台+风格生成文案；📖诗词歌词区搜关键词找诗词歌词；💬破冰助手选场景生成回复。右上角⚙️可配置API获得更智能的回复。';
-    else if (txt.includes('小红书')) { curPlatform='xhs'; updatePlatformUI(); r = '切到小红书模式！输入关键词生成～'; }
-    else if (txt.includes('朋友圈')) { curPlatform='pyq'; updatePlatformUI(); r = '切到朋友圈！想发什么？'; }
-    else if (txt.includes('抖音')) { curPlatform='dy'; updatePlatformUI(); r = '切到抖音！来条短视频文案？'; }
-    else if (txt.includes('幽默')||txt.includes('搞笑')) { curStyle='幽默'; r = '幽默模式😄'; }
-    else if (txt.includes('文艺')) { curStyle='文艺'; r = '文艺风来了🌸'; }
-    else if (txt.includes('励志')) { curStyle='励志'; r = '给你打打鸡血💪'; }
-    else if (txt.includes('种草')) { curStyle='种草'; r = '种草模式🌿'; }
-    else if (txt.includes('换一个')||txt.includes('再来')) { generateCopySmart(); r = '来～ 看看这条！'; }
-    else {
-      const kw = txt.replace(/^(帮我写|我要|来一条|想要|写)\s*/g,'').trim();
-      if (kw) { Q('kwInput').value = kw; curKw = kw; generateCopySmart(); r = '好呀！以「'+kw+'」为主题写了一条，看看喜不喜欢？✨'; }
-      else { r = '嗯嗯，跟我说说你想写什么样的文案？或者问我古诗词、歌词也可以～'; }
+  try {
+    const resp = await fetch('/api/chat', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: txt })
+    });
+    const data = await resp.json();
+    if (data.success && data.text) {
+      addMsg('ai', data.text); return;
     }
-    addMsg('ai', r);
-  }, 300);
+  } catch(e) {}
+  addMsg('ai', '收到！想写文案或搜诗词可以直接告诉我～');
 });
 
 function updatePlatformUI() {
